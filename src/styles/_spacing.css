@@ -1,0 +1,21 @@
+@theme {
+    /* Micro Spacing */
+    --spacing-micro-2: 2px;
+    --spacing-micro-4: 4px;
+    --spacing-micro-8: 8px;
+    --spacing-micro-12: 12px;
+    --spacing-micro-16: 16px;
+    --spacing-micro-24: 24px;
+    --spacing-micro-32: 32px;
+
+    /* Macro Spacing */
+    --spacing-macro-16: 16px;
+    --spacing-macro-24: 24px;
+    --spacing-macro-32: 32px;
+    --spacing-macro-40: 40px;
+    --spacing-macro-48: 48px;
+    --spacing-macro-64: 64px;
+    --spacing-macro-80: 80px;
+
+    --breakpoint-desktop: 1024px;
+}

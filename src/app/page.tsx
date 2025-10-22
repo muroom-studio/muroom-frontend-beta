@@ -1,103 +1,60 @@
-import Image from "next/image";
+import Header from '@/components/Header';
+import Image from 'next/image';
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function Intro() {
+    return (
+        <div className='relative w-full h-full'>
+            <div
+                className='
+                absolute w-full h-[1138px]
+                bg-linear-to-b from-primary-50 to-white 
+                flex justify-center items-center
+                overflow-hidden
+                '
+            >
+                <span className='leading-[448px] text-[320px] font-bold text-white'>muroom</span>
+            </div>
+            <div
+                className='
+                relative z-20
+                mx-auto w-full h-full
+                max-w-[375px] px-5
+                lg:max-w-[1024px] lg:px-5
+                desktop:max-w-[calc(1440px - 2 * 208px)] desktop:px-0
+                '
+            >
+                <div className='grid grid-cols-1 desktop:grid-cols-6 gap-5'>
+                    <Header />
+                    <section className='col-span-full w-full text-center row-start-1 pt-50'>
+                        <div className='leading-[30px] text-[20px] font-bold text-primary-500 mb-6'>
+                            <p>새로운 음악 연습실 대여 플랫폼, 뮤룸</p>
+                        </div>
+                        <div className='leading-[67px] text-5xl font-bold text-black mb-14'>
+                            <p>복잡한 커뮤니티 플랫폼에서 </p>
+                            <p>
+                                <span className='text-primary-500'>원하는 작업실</span>을 찾을 수 있을까요?
+                            </p>
+                        </div>
+                        <div className='leading-[27px] text-[20px] mb-24'>
+                            <p>
+                                <span className='font-semibold'>뮤룸</span>은 기존 플랫폼 게시판 형태의 불편을 개선해
+                                고객들이 훨씬 사용하기 쉬운 새로운 작업실매물 탐색 플랫폼입니다.
+                            </p>
+                            <p>사용자 테스트 결과, 기존 플랫폼 대비 40% 이상의 사용자 만족도 상승을 기록했습니다.</p>
+                            <p>12월 런칭 예정이며, 현재 함께하실 사장님을 모집 중입니다.</p>
+                        </div>
+                        <div className='grid place-items-center'>
+                            <Image src='/images/laptop.png' alt='laptop image' width={720} height={437} />
+                        </div>
+                    </section>
+                    <section className='col-span-full'>
+                        <div className='w-1 h-1000'></div>
+                    </section>
+                    <section id='submit-form' className='col-span-full text-center'>
+                        <p>여기 input</p>
+                    </section>
+                </div>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }

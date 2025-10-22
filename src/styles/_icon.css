@@ -1,0 +1,34 @@
+@theme {
+    --icon-size-ex-sm: 12px;
+    --icon-size-sm: 18px;
+    --icon-size-md: 32px;
+    --icon-size-lg: 36px;
+    --icon-size-ex-lg: 48px;
+}
+
+@layer utilities {
+    .icon-ex-sm {
+        width: var(--icon-size-ex-sm);
+        height: var(--icon-size-ex-sm);
+    }
+
+    .icon-sm {
+        width: var(--icon-size-sm);
+        height: var(--icon-size-sm);
+    }
+
+    .icon-md {
+        width: var(--icon-size-md);
+        height: var(--icon-size-md);
+    }
+
+    .icon-lg {
+        width: var(--icon-size-lg);
+        height: var(--icon-size-lg);
+    }
+
+    .icon-ex-lg {
+        width: var(--icon-size-ex-lg);
+        height: var(--icon-size-ex-lg);
+    }
+}

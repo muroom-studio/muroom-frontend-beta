@@ -1,0 +1,39 @@
+@theme {
+    --radius-4: 4px;
+    --radius-8: 8px;
+    --radius-12: 12px;
+    --radius-16: 16px;
+    --radius-20: 20px;
+    --radius-24: 24px;
+    --radius-100: 100px;
+}
+
+@layer utilities {
+    .radius-4 {
+        border-radius: var(--radius-4);
+    }
+
+    .radius-8 {
+        border-radius: var(--radius-8);
+    }
+
+    .radius-12 {
+        border-radius: var(--radius-12);
+    }
+
+    .radius-16 {
+        border-radius: var(--radius-16);
+    }
+
+    .radius-20 {
+        border-radius: var(--radius-20);
+    }
+
+    .radius-24 {
+        border-radius: var(--radius-24);
+    }
+
+    .radius-100 {
+        border-radius: var(--radius-100);
+    }
+}
