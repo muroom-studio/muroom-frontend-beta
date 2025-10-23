@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+@theme {
+    --letter-spacing-base: -0.02em;
+}
+
 @import '../styles/_color.css';
 @import '../styles/_icon.css';
 @import '../styles/_radius.css';
@@ -8,7 +12,5 @@
 
 body {
     font-family: 'Pretendard', sans-serif;
-    letter-spacing: -0.02em;
-
-    background-color: var(--color-primary-50);
+    letter-spacing: var(--letter-spacing-base);
 }
