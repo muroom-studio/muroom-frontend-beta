@@ -57,7 +57,7 @@ export default function Intro() {
     ];
 
     return (
-        <div className='relative w-full min-w-306 h-full bg-white'>
+        <div className='relative w-full min-w-306 h-full bg-white flex justify-center'>
             <div
                 id='background-muroom'
                 className='
@@ -72,7 +72,7 @@ export default function Intro() {
             <div
                 className='
                 relative z-20
-                w-full min-w-306 h-full
+                w-306 min-w-306 h-full
                 px-25
                 '
             >
