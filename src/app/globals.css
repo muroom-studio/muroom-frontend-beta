@@ -1,16 +1,50 @@
 @import 'tailwindcss';
 
-@theme {
-    --letter-spacing-base: -0.02em;
-}
-
+/*
+ * 2. 나머지 CSS 파일들을 import 합니다.
+ */
 @import '../styles/_color.css';
 @import '../styles/_icon.css';
 @import '../styles/_radius.css';
 @import '../styles/_spacing.css';
 @import '../styles/_typography.css';
 
-body {
-    font-family: 'Pretendard', sans-serif;
-    letter-spacing: var(--letter-spacing-base);
+/*
+ * 1. @theme 블록을 파일 상단에 하나로 통합합니다.
+ * 여기서는 CSS 변수(토큰)만 정의합니다. (extend {} 구문 없음)
+ */
+@theme {
+    /* 기존 토큰 */
+    --letter-spacing-base: -0.02em;
+
+    /* 그림자 토큰 */
+    --shadow-dark: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+    --shadow-level-1: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+    /* 배경 이미지 토큰 (경로 수정됨) */
+    --bg-honeycomb: url('/images/patterns/hexagon-1.svg');
+}
+
+/*
+ * 3. body 같은 기본 스타일은 @layer base로 감싸야 합니다.
+ */
+@layer base {
+    body {
+        font-family: 'Pretendard', sans-serif;
+        letter-spacing: var(--letter-spacing-base);
+    }
+}
+
+/*
+ * 4. 커스텀 클래스는 @layer utilities 에서 정의합니다.
+ * @theme에서 만든 변수(var(...))를 여기서 사용합니다.
+ */
+@layer utilities {
+    .shadow-dark {
+        box-shadow: var(--shadow-dark);
+    }
+
+    .shadow-level-1 {
+        box-shadow: var(--shadow-level-1);
+    }
 }

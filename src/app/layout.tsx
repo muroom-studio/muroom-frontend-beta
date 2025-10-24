@@ -1,6 +1,5 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { pretendard } from '@/styles/fonts';
 
 export const metadata: Metadata = {
     title: 'muroom',
@@ -14,7 +13,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en' className='scroll-smooth bg-primary-50'>
-            <body className={`${pretendard.variable} bg-white`}>{children}</body>
+            <body className='bg-white'>{children}</body>
         </html>
     );
 }

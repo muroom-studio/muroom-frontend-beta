@@ -1,0 +1,90 @@
+import Image from 'next/image';
+
+interface ExecutiveFeature {
+    id: number;
+    icon: string;
+    title: string;
+    details: string[];
+}
+
+const executiveFeature: ExecutiveFeature[] = [
+    {
+        id: 1,
+        icon: 'contract-icon.svg',
+        title: '계약서',
+        details: ['온라인 전자계약 제공', '계약서 양식 제공 및 출력 가능', '계약서 관리 서비스'],
+    },
+    {
+        id: 2,
+        icon: 'payments-icon.svg',
+        title: '페이먼츠',
+        details: ['실시간 카드/간편 결제 서비스', '자동전산 및 보고서 제공'],
+    },
+    {
+        id: 3,
+        icon: 'chat-icon.svg',
+        title: '톡톡',
+        details: ['실시간 채팅 서비스', '자동 응답 메시지 관리', '고객 단체 홍보 메시지 발송'],
+    },
+    {
+        id: 4,
+        icon: 'customized-solution-icon,svg',
+        title: '고객 맞춤 솔루션',
+        details: ['이용 정보를 통한 작업실 노출', '고객 이용 데이터 분석 제공'],
+    },
+    {
+        id: 5,
+        icon: 'calendar-icon.svg',
+        title: '월세 및 일정관리',
+        details: ['실시간 현황 대시보드 서비스', '월세 수금 알림', '재무 분석 보고서 제공'],
+    },
+    {
+        id: 6,
+        icon: 'reservation-icon.svg',
+        title: '공실 예약',
+        details: ['만실 시 고객 예약 서비스', '공실 시 예약 고객에게 메세지 자동 발송'],
+    },
+];
+
+const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
+    return (
+        <div className='h-83 py-14 px-15 flex flex-col border border-gray-200 rounded-20 shadow-level-1'>
+            <div className='grid place-items-center mb-4'>
+                <Image
+                    src={`/images/icons/${feature.icon}`}
+                    alt={`${feature.title}`}
+                    width={80}
+                    height={80}
+                    className='mb-4'
+                />
+                <span className='leading-9 text-2xl font-bold'>{feature.title}</span>
+            </div>
+            <ul className='flex flex-col items-start justify-start'>
+                {feature.details.map((detail) => (
+                    <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-center justify-start'>
+                        <span className='inline-block w-1 h-1 bg-gray-700 rounded-full mr-2.5'></span>
+                        <p>{detail}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default function ExecutiveFeaturesSection() {
+    return (
+        <section id='custom-section' className='w-306 min-w-306 relative px-25 mb-50'>
+            <div className='mb-14 leading-14 text-special-m-40-size font-bold text-gray-800'>
+                <p>사장님을 위한 맞춤 기능도 준비하고 있어요!</p>
+            </div>
+            <div className='grid grid-cols-3 gap-5 mb-10'>
+                {executiveFeature.map((feature) => (
+                    <ExecutiveFeatureCard key={feature.id} feature={feature} />
+                ))}
+            </div>
+            <div className='w-full flex justify-end text-title-exs-18 text-gray-600'>
+                <span>* 위 기능 오픈 베타 런칭 이후 추가될 예정이며, 변경 될 수 있습니다.</span>
+            </div>
+        </section>
+    );
+}
