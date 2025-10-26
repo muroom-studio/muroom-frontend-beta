@@ -5,12 +5,7 @@ import { ChangeEvent, KeyboardEvent, ReactNode, useRef, useState } from 'react';
 import { useToast } from '../ToastProvider';
 import ErrorMessage from '../ErrorMessage';
 import dynamic from 'next/dynamic';
-
-interface FormLabelProps {
-    htmlFor: string;
-    children: ReactNode;
-    required?: boolean;
-}
+import FormLabel from '../FormLabel';
 
 interface FilePreview {
     url: string;
@@ -24,13 +19,6 @@ interface FormErrors {
     serviceLink?: string;
     agreement?: string;
 }
-
-const FormLabel = ({ htmlFor, children, required = false }: FormLabelProps) => (
-    <label htmlFor={htmlFor} className='flex items-center text-base-exl-18-2 text-gray-800 mb-2'>
-        <span className='mr-1'>{children}</span>
-        {required && <Image src='/images/icons/essential-icon.svg' alt='essential' width={16} height={16} />}
-    </label>
-);
 
 // 입력 필드 공통 스타일
 const inputStyles = `w-full rounded-[10px] px-4 py-4 text-base-l-16-1 text-gray-700 placeholder-gray-400
@@ -107,6 +95,56 @@ export default function SubmitForm() {
         // 1d. filePreviews state 업데이트 (해당 인덱스 제거)
         setFilePreviews((prevPreviews) => prevPreviews.filter((_, index) => index !== indexToRemove));
     };
+    /** 이름 유효성 검사 (2~30자, 한글/영문/공백) */
+    const validateName = (name: string) => {
+        const regex = /^[a-zA-Z가-힣\s]{2,30}$/;
+        return regex.test(name);
+    };
+
+    /** 전화번호 유효성 검사 (010-XXXX-XXXX) */
+    const validatePhone = (phone: string) => {
+        const regex = /^\d{2,4}-\d{3,4}-\d{4}$/;
+        return regex.test(phone);
+    };
+
+    const formatPhoneNumber = (value: string) => {
+        const d = value.replace(/[^\d]/g, ''); // 숫자만 추출
+
+        if (d.startsWith('02')) {
+            // 서울: 02-XXX-XXXX (9자리) or 02-XXXX-XXXX (10자리)
+            if (d.length <= 2) return d; // 02
+            if (d.length <= 5) return `${d.slice(0, 2)}-${d.slice(2)}`; // 02-123
+            if (d.length === 9) return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`; // 02-123-4567
+            if (d.length > 9) return `${d.slice(0, 2)}-${d.slice(2, 6)}-${d.slice(6, 10)}`; // 02-1234-5678 (10자리)
+            // 6~8자리 입력 중: 9자리 형식으로 우선 적용
+            return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`; // 02-123-456
+        } else if (d.startsWith('010')) {
+            // 휴대폰: 010-XXXX-XXXX (11자리)
+            if (d.length <= 3) return d;
+            if (d.length <= 7) return `${d.slice(0, 3)}-${d.slice(3)}`; // 010-1234
+            return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`; // 010-1234-5678
+        } else if (d.startsWith('0507')) {
+            // 0507 (안심번호): 0507-XXX-XXXX (11자리)
+            if (d.length <= 4) return d; // 0507
+            if (d.length <= 8) return `${d.slice(0, 4)}-${d.slice(4)}`; // 0507-1234
+            return `${d.slice(0, 4)}-${d.slice(4, 8)}-${d.slice(8, 12)}`; // 0507-1234-5678
+        } else if (d.match(/^(0(1[1-9]|3[1-3]|4[1-4]|5[1-5]|6[1-4]))/)) {
+            // 기타 3자리 지역번호: 0XX-XXX-XXXX (10자리) or 0XX-XXXX-XXXX (11자리)
+            if (d.length <= 3) return d; // 031
+            if (d.length <= 6) return `${d.slice(0, 3)}-${d.slice(3)}`; // 031-123
+            if (d.length === 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`; // 031-123-4567 (10자리)
+            if (d.length > 10) return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`; // 031-1234-5678 (11자리)
+            // 7~9자리 입력 중: 10자리 형식으로 우선 적용
+            return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`; // 031-123-456
+        }
+
+        // 기타 1588 등
+        // 혹은 01X (011, 016 등) - 010과 동일한 11자리로 처리
+        if (d.length <= 3) return d;
+        if (d.length <= 7) return `${d.slice(0, 3)}-${d.slice(3)}`;
+        if (d.length <= 11) return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`;
+        return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`;
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         // 폼의 기본 동작(페이지 새로고침) 방지
@@ -121,9 +159,23 @@ export default function SubmitForm() {
                 nameRef.current?.focus();
             }
             hasError = true;
+        } else if (!validateName(name.trim())) {
+            newErrors.name = '올바른 성함(2~30자, 한글/영문)을 입력해주세요.';
+            if (!hasError) {
+                toast(newErrors.name);
+                nameRef.current?.focus();
+            }
+            hasError = true;
         }
         if (!phone.trim()) {
             newErrors.phone = '전화번호를 입력해주세요.';
+            if (!hasError) {
+                toast(newErrors.phone);
+                phoneRef.current?.focus();
+            }
+            hasError = true;
+        } else if (!validatePhone(phone.trim())) {
+            newErrors.phone = '올바른 전화번호 형식(010-1234-5678)을 입력해주세요.';
             if (!hasError) {
                 toast(newErrors.phone);
                 phoneRef.current?.focus();
@@ -160,6 +212,7 @@ export default function SubmitForm() {
             phone,
             serviceLink,
             suggestion,
+            agreement,
             roomImages: roomImages.map((file) => file.name),
         };
         console.log('제출할 데이터:', formData);
@@ -216,7 +269,8 @@ export default function SubmitForm() {
                             className={`${inputStyles} ${phone.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
                             value={phone}
                             onChange={(e) => {
-                                setPhone(e.target.value);
+                                const formattedPhone = formatPhoneNumber(e.target.value);
+                                setPhone(formattedPhone);
                                 handleChange('phone');
                             }}
                         />
@@ -229,21 +283,25 @@ export default function SubmitForm() {
                 <FormLabel htmlFor='serviceLink' required>
                     기존 서비스 링크
                 </FormLabel>
-                <div className='relative'>
+                <div className='group relative'>
                     <Image
                         src='/images/icons/link-icon.svg'
                         alt='link'
                         width={20}
                         height={20}
-                        className='absolute left-4 top-1/2 -translate-y-1/2'
+                        className={`absolute left-4 top-1/2 -translate-y-1/2
+                        duration-300 group-hover:opacity-0 group-focus-within:opacity-0 ${
+                            serviceLink.trim() ? 'opacity-0' : 'opacity-100'
+                        }`}
                     />
                     <input
                         ref={serviceLinkRef}
                         id='serviceLink'
                         placeholder='등록하신 기존 서비스 링크를 입력해주세요'
-                        className={`${inputStyles} pl-11 ${
-                            serviceLink.trim() ? 'outline-gray-600' : 'outline-gray-400'
-                        }`}
+                        className={`${inputStyles} ${
+                            serviceLink.trim() ? 'outline-gray-600 pl-4' : 'outline-gray-400 pl-11'
+                        }
+                        duration-300 group-hover:pl-4 focus:pl-4`}
                         value={serviceLink}
                         onChange={(e) => {
                             setServiceLink(e.target.value);
@@ -325,7 +383,7 @@ export default function SubmitForm() {
                     <textarea
                         id='suggestion'
                         rows={5}
-                        placeholder='추가하고 싶으신 기능이 있으시다면 작성해주세요.'
+                        placeholder='추가하고 싶으신 기능이 있으시다면 작성해주세요'
                         className={`w-full rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none
                             outline outline-gray-400 placeholder-gray-400 focus:outline-2 focus:outline-primary-400
                             hover:shadow-level-0 ${suggestion.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
@@ -353,10 +411,10 @@ export default function SubmitForm() {
                 </p>
 
                 <div className='mb-10'>
-                    <label htmlFor='agreement' className='group w-30 flex items-center cursor-pointer'>
+                    <label htmlFor='agreementInSubmitForm' className='group w-30 flex items-center cursor-pointer'>
                         <input
                             type='checkbox'
-                            id='agreement'
+                            id='agreementInSubmitForm'
                             name='agreement'
                             className='peer hidden'
                             required
