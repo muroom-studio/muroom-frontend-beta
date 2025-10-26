@@ -29,7 +29,7 @@ export default function ProblemsSection() {
             <div className='leading-5 text-[1rem] font-normal text-gray-500 mb-4.5'>
                 장기 연습실 대여 플랫폼 관련 설문조사 음악 작업실 사용자 109명 대상으로 조사했습니다.
             </div>
-            <div className='w-full py-10 px-50 outline outline-gray-100 rounded-[10px] shadow-dark mb-14'>
+            <div className='w-full py-10 px-50 outline outline-gray-100 rounded-[10px] shadow-level-1 mb-14'>
                 <div className='w-full flex items-center justify-center mb-10'>
                     <div className='w-10 h-10 bg-primary-400 grid place-items-center rounded-[10px] leading-7 text-[1.25rem] font-bold text-white mr-3'>
                         Q
@@ -87,14 +87,14 @@ export default function ProblemsSection() {
             <div className='grid grid-cols-2 gap-5'>
                 <div className='col-span-1 rounded-[10px] bg-primary-400 grid place-items-center shadow-[0_0_20px_0_rgba(138,56,245,0.2)]'>
                     <span className='my-4 font-bold text-3xl leading-9 text-white'>비효율적인 정보 탐색</span>
-                    <div className='w-full py-10 text-center rounded-b-[10px] bg-white text-[1.75rem] font-medium leading-9.75 shadow-dark'>
+                    <div className='w-full py-10 text-center rounded-b-[10px] bg-white text-[1.75rem] font-medium leading-9.75 shadow-level-1'>
                         <p>이용자들은 수많은 글 속에서</p>
                         <p>필요한 정보를 찾느라 피로를 느낍니다.</p>
                     </div>
                 </div>
                 <div className='col-span-1 rounded-[10px] bg-primary-400 grid place-items-center shadow-[0_0_20px_0_rgba(138,56,245,0.2)]'>
                     <span className='my-4 font-bold text-3xl leading-9 text-white'>매물의 노출 한계</span>
-                    <div className='w-full py-10 text-center rounded-b-[10px] bg-white text-[1.75rem] font-medium leading-9.75 shadow-dark'>
+                    <div className='w-full py-10 text-center rounded-b-[10px] bg-white text-[1.75rem] font-medium leading-9.75 shadow-level-1'>
                         <p>좋은 시설을 갖춰도, 검색되지 않으면</p>
                         <p>외면받기 쉽습니다.</p>
                     </div>

@@ -3,6 +3,7 @@ import Image from 'next/image';
 interface ExecutiveFeature {
     id: number;
     icon: string;
+    iconHovered: string;
     title: string;
     details: string[];
 }
@@ -11,36 +12,42 @@ const executiveFeature: ExecutiveFeature[] = [
     {
         id: 1,
         icon: 'contract-icon.svg',
+        iconHovered: 'contract-icon-hovered.svg',
         title: '계약서',
         details: ['온라인 전자계약 제공', '계약서 양식 제공 및 출력 가능', '계약서 관리 서비스'],
     },
     {
         id: 2,
         icon: 'payments-icon.svg',
+        iconHovered: 'payments-icon-hovered.svg',
         title: '페이먼츠',
         details: ['실시간 카드/간편 결제 서비스', '자동전산 및 보고서 제공'],
     },
     {
         id: 3,
         icon: 'chat-icon.svg',
+        iconHovered: 'chat-icon-hovered.svg',
         title: '톡톡',
         details: ['실시간 채팅 서비스', '자동 응답 메시지 관리', '고객 단체 홍보 메시지 발송'],
     },
     {
         id: 4,
-        icon: 'customized-solution-icon,svg',
+        icon: 'customized-solution-icon.svg',
+        iconHovered: 'customized-solution-icon-hovered.svg',
         title: '고객 맞춤 솔루션',
         details: ['이용 정보를 통한 작업실 노출', '고객 이용 데이터 분석 제공'],
     },
     {
         id: 5,
         icon: 'calendar-icon.svg',
+        iconHovered: 'calendar-icon-hovered.svg',
         title: '월세 및 일정관리',
         details: ['실시간 현황 대시보드 서비스', '월세 수금 알림', '재무 분석 보고서 제공'],
     },
     {
         id: 6,
         icon: 'reservation-icon.svg',
+        iconHovered: 'reservation-icon-hovered.svg',
         title: '공실 예약',
         details: ['만실 시 고객 예약 서비스', '공실 시 예약 고객에게 메세지 자동 발송'],
     },
@@ -48,16 +55,26 @@ const executiveFeature: ExecutiveFeature[] = [
 
 const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
     return (
-        <div className='h-83 py-14 px-15 flex flex-col border border-gray-200 rounded-20 shadow-level-1'>
+        <div
+            className='group h-83 py-14 px-15 flex flex-col outline outline-gray-200 rounded-20 shadow-level-0
+        transition-transform duration-300 hover:-translate-y-2.5 hover:outline-2 hover:outline-primary-200 hover:[box-shadow:var(--shadow-level-0),var(--shadow-surrounded)]'
+        >
             <div className='grid place-items-center mb-4'>
                 <Image
                     src={`/images/icons/${feature.icon}`}
                     alt={`${feature.title}`}
                     width={80}
                     height={80}
-                    className='mb-4'
+                    className='mb-4 block group-hover:hidden'
                 />
-                <span className='leading-9 text-2xl font-bold'>{feature.title}</span>
+                <Image
+                    src={`/images/icons/${feature.iconHovered}`}
+                    alt={`${feature.title}`}
+                    width={80}
+                    height={80}
+                    className='mb-4 hidden group-hover:block'
+                />
+                <span className='leading-9 text-2xl font-bold group-hover:text-primary-500'>{feature.title}</span>
             </div>
             <ul className='flex flex-col items-start justify-start'>
                 {feature.details.map((detail) => (
@@ -75,7 +92,9 @@ export default function ExecutiveFeaturesSection() {
     return (
         <section id='custom-section' className='w-306 min-w-306 relative px-25 mb-50'>
             <div className='mb-14 leading-14 text-special-m-40-size font-bold text-gray-800'>
-                <p>사장님을 위한 맞춤 기능도 준비하고 있어요!</p>
+                <p>
+                    사장님을 위한 <span className='text-primary-500'>맞춤 기능</span>도 준비하고 있어요!
+                </p>
             </div>
             <div className='grid grid-cols-3 gap-5 mb-10'>
                 {executiveFeature.map((feature) => (

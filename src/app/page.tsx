@@ -9,6 +9,8 @@ import OpinionsSection from '@/components/sections/OpinionsSection';
 import ProblemsSection from '@/components/sections/ProblemsSection';
 import SubmitSection from '@/components/sections/SubmitSection';
 import ExecutiveFeaturesSection from '@/components/sections/ExecutiveFeaturesSection';
+import FAQSection from '@/components/sections/FAQSection';
+import InquirySection from '@/components/sections/InquirySection';
 
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
 export default function Intro() {
@@ -38,6 +40,11 @@ export default function Intro() {
             <ExecutiveFeaturesSection />
 
             <SubmitSection />
+
+            {/* TODO: 회색배경 */}
+            <FAQSection />
+
+            <InquirySection />
         </div>
     );
 }

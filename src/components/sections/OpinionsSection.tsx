@@ -44,7 +44,7 @@ export default function OpinionsSection() {
                     return (
                         <div
                             key={index}
-                            className='relative h-[407px] col-span-2 outline outline-gray-100 rounded-[10px] shadow-dark p-10'
+                            className='relative h-[407px] col-span-2 outline outline-gray-100 rounded-[10px] shadow-level-1 p-10'
                         >
                             <div className='leading-10.5 text-3xl font-bold text-gray-700 mb-6'>
                                 <p className='whitespace-pre-line'>{opinion.title}</p>

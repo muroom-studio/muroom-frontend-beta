@@ -2,7 +2,7 @@ import SubmitForm from './SubmitForm';
 
 export default function SubmitSection() {
     return (
-        <section id='submit-form' className='w-306 min-w-306 relative px-25 mb-50'>
+        <section id='submit-form' className='w-306 min-w-306 relative px-25 mb-20'>
             <div className='mb-10 text-center leading-17 text-5xl font-bold text-gray-800'>
                 <p>지금 등록하면,</p>
                 <p>

@@ -18,8 +18,9 @@
     --letter-spacing-base: -0.02em;
 
     /* 그림자 토큰 */
-    --shadow-dark: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
-    --shadow-level-1: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --shadow-level-1: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+    --shadow-level-0: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --shadow-surrounded: 0 0 20px 0 rgba(142, 81, 255, 0.1);
 
     /* 배경 이미지 토큰 (경로 수정됨) */
     --bg-honeycomb: url('/images/patterns/hexagon-1.svg');
@@ -40,11 +41,15 @@
  * @theme에서 만든 변수(var(...))를 여기서 사용합니다.
  */
 @layer utilities {
-    .shadow-dark {
-        box-shadow: var(--shadow-dark);
-    }
-
     .shadow-level-1 {
         box-shadow: var(--shadow-level-1);
+    }
+
+    .shadow-level-0 {
+        box-shadow: var(--shadow-level-0);
+    }
+
+    .shadow-surrounded {
+        box-shadow: var(--shadow-surrounded);
     }
 }

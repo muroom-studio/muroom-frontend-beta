@@ -21,7 +21,7 @@ export default function IntroSection() {
                 <p>12월 런칭 예정이며, 현재 함께하실 사장님을 모집 중입니다.</p>
             </div>
             <div className='grid place-items-center'>
-                <Image src='/images/laptop.png' alt='laptop image' width={720} height={437} />
+                <Image src='/images/laptop.svg' alt='laptop image' width={720} height={437} />
             </div>
         </section>
     );

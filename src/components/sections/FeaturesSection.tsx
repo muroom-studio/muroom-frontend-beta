@@ -80,7 +80,7 @@ const features: Feature[] = [
 
 const FeatureCard = ({ feature }: { feature: Feature }) => {
     return (
-        <div className='relative h-107 py-5 px-8.5 bg-white border border-primary-100 rounded-[10px] shadow-level-1 overflow-hidden'>
+        <div className='relative h-107 py-5 px-8.5 bg-white border border-primary-100 rounded-[10px] shadow-level-0 overflow-hidden'>
             <div className='flex'>
                 <Image src={`/images/icons/${feature.icon}`} alt={`${feature.title}`} width={24} height={24} />
                 <span className='ml-2 mb-2 leading-11 text-2xl font-semibold text-gray-700'>{feature.title}</span>

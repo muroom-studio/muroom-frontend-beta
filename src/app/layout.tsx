@@ -1,3 +1,4 @@
+import { ToastProvider } from '@/components/ToastProvider';
 import './globals.css';
 import type { Metadata } from 'next';
 
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en' className='scroll-smooth bg-primary-50'>
-            <body className='bg-white'>{children}</body>
+            <body className='bg-white'>
+                <ToastProvider>{children}</ToastProvider>
+            </body>
         </html>
     );
 }
