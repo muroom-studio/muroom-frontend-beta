@@ -402,7 +402,12 @@ export default function SubmitForm() {
             </div>
 
             <div className='mb-10'>
-                <h2 className='mb-10 text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
+                <div className='mb-10 flex items-center'>
+                    <h2 className='text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
+                    <button type='button' className='ml-1 cursor-pointer'>
+                        <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
+                    </button>
+                </div>
                 <p className='mb-1 text-base-exl-18-1 text-gray-600'>
                     뮤룸이 상단에 나와있는 사장님의 개인데이터를 처리하는데 동의하시겠습니까?
                 </p>
