@@ -45,6 +45,7 @@ export default function SubmitForm() {
     const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
     const [limitToastShown, setLimitToastShown] = useState(false);
+    const [viewModal, setViewModal] = useState(false);
 
     const nameRef = useRef<HTMLInputElement>(null);
     const phoneRef = useRef<HTMLInputElement>(null);
@@ -231,259 +232,309 @@ export default function SubmitForm() {
     };
 
     return (
-        <form className='px-43.5' onSubmit={handleSubmit} noValidate>
-            {/* <Toaster position='top-center' /> */}
-            <h1 className='text-title-s-22-1 text-gray-800 mb-10'>등록정보</h1>
-
-            <div className='grid grid-cols-2 gap-5 mb-10'>
-                <div>
-                    <FormLabel htmlFor='name' required>
-                        성함
-                    </FormLabel>
-                    <div className='relative'>
-                        <input
-                            ref={nameRef}
-                            type='text'
-                            id='name'
-                            placeholder='성함을 입력해주세요'
-                            className={`${inputStyles} ${name.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
-                            value={name}
-                            onChange={(e) => {
-                                setName(e.target.value);
-                                handleChange('name');
-                            }}
-                        />
-                        <ErrorMessage message={errors.name} />
+        <>
+            {viewModal && (
+                <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
+                    <div className='bg-white w-105 rounded-[10px]'>
+                        <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
+                            <button onClick={() => setViewModal(false)} className='cursor-pointer'>
+                                <Image src='/images/icons/delete-icon.svg' alt='close' width={24} height={24} />
+                            </button>
+                        </div>
+                        <div className='px-5 py-6'>
+                            <h2 className='text-center text-base-exl-18-2 text-gray-800 mb-6'>
+                                개인정보 수집 및 이용 동의
+                            </h2>
+                            <p className='mb-8'>
+                                수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
+                                안내 드리오니 자세히 읽으신 후 동의하여 주시기 바랍니다.
+                            </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
+                                (필수) 성함, 전화번호, 기존 서비스 링크
+                            </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
+                                수집 이용 동의일로부터 12개월(단, 요청시 삭제)
+                            </p>
+                            <hr className='text-gray-300 mb-6' />
+                            <p className='text-base-m-14-1 text-gray-400'>
+                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
+                                이용하실 수 없습니다.
+                            </p>
+                        </div>
+                        <div className='px-5 py-4'>
+                            <button
+                                className='border border-gray-300 w-full h-14 rounded-[4px]'
+                                onClick={() => {
+                                    setAgreement(true);
+                                    handleChange('agreement');
+                                    setViewModal(false);
+                                }}
+                            >
+                                확인
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <FormLabel htmlFor='phone' required>
-                        전화번호
-                    </FormLabel>
-                    <div className='relative'>
-                        <input
-                            ref={phoneRef}
-                            type='tel'
-                            id='phone'
-                            placeholder='기존 서비스에 등록한 번호로 입력해주세요'
-                            className={`${inputStyles} ${phone.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
-                            value={phone}
-                            onChange={(e) => {
-                                const formattedPhone = formatPhoneNumber(e.target.value);
-                                setPhone(formattedPhone);
-                                handleChange('phone');
-                            }}
-                        />
-                        <ErrorMessage message={errors.phone} />
+            )}
+            <form className='px-43.5' onSubmit={handleSubmit} noValidate>
+                {/* <Toaster position='top-center' /> */}
+                <h1 className='text-title-s-22-1 text-gray-800 mb-10'>등록정보</h1>
+
+                <div className='grid grid-cols-2 gap-5 mb-10'>
+                    <div>
+                        <FormLabel htmlFor='name' required>
+                            성함
+                        </FormLabel>
+                        <div className='relative'>
+                            <input
+                                ref={nameRef}
+                                type='text'
+                                id='name'
+                                placeholder='성함을 입력해주세요'
+                                className={`${inputStyles} ${name.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
+                                value={name}
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                    handleChange('name');
+                                }}
+                            />
+                            <ErrorMessage message={errors.name} />
+                        </div>
+                    </div>
+                    <div>
+                        <FormLabel htmlFor='phone' required>
+                            전화번호
+                        </FormLabel>
+                        <div className='relative'>
+                            <input
+                                ref={phoneRef}
+                                type='tel'
+                                id='phone'
+                                placeholder='기존 서비스에 등록한 번호로 입력해주세요'
+                                className={`${inputStyles} ${phone.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
+                                value={phone}
+                                onChange={(e) => {
+                                    const formattedPhone = formatPhoneNumber(e.target.value);
+                                    setPhone(formattedPhone);
+                                    handleChange('phone');
+                                }}
+                            />
+                            <ErrorMessage message={errors.phone} />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className='mb-10'>
-                <FormLabel htmlFor='serviceLink' required>
-                    기존 서비스 링크
-                </FormLabel>
-                <div className='group relative'>
-                    <Image
-                        src='/images/icons/link-icon.svg'
-                        alt='link'
-                        width={20}
-                        height={20}
-                        className={`absolute left-4 top-1/2 -translate-y-1/2
+                <div className='mb-10'>
+                    <FormLabel htmlFor='serviceLink' required>
+                        기존 서비스 링크
+                    </FormLabel>
+                    <div className='group relative'>
+                        <Image
+                            src='/images/icons/link-icon.svg'
+                            alt='link'
+                            width={20}
+                            height={20}
+                            className={`absolute left-4 top-1/2 -translate-y-1/2
                         duration-300 group-hover:opacity-0 group-focus-within:opacity-0 ${
                             serviceLink.trim() ? 'opacity-0' : 'opacity-100'
                         }`}
-                    />
-                    <input
-                        ref={serviceLinkRef}
-                        id='serviceLink'
-                        placeholder='등록하신 기존 서비스 링크를 입력해주세요'
-                        className={`${inputStyles} ${
-                            serviceLink.trim() ? 'outline-gray-600 pl-4' : 'outline-gray-400 pl-11'
-                        }
-                        duration-300 group-hover:pl-4 focus:pl-4`}
-                        value={serviceLink}
-                        onChange={(e) => {
-                            setServiceLink(e.target.value);
-                            handleChange('serviceLink');
-                        }}
-                    />
-                    <ErrorMessage message={errors.serviceLink} />
-                </div>
-            </div>
-
-            <div className='mb-10'>
-                <FormLabel htmlFor='roomImage'>작업실 정보 이미지</FormLabel>
-                <p className='-mt-1 mb-2 text-base-l-16-1 text-gray-400'>
-                    등록하신 기존 서비스에 올리셨던 작업실 정보가 포함된 이미지
-                </p>
-                <label
-                    htmlFor='file-upload'
-                    className={`flex flex-col items-center justify-center py-10 cursor-pointer
-                        rounded-lg text-base-l-16-1 text-gray-600 hover:shadow-level-0 overflow-hidden
-                        border ${filePreviews.length == 0 ? 'border-dashed border-gray-400' : 'border-gray-600'}`}
-                >
-                    {filePreviews.length === 0 ? (
-                        <div className='mb-3 flex items-center justify-center'>
-                            <Image src='/images/icons/upload-file-icon.svg' alt='+' width={72} height={72} />
-                        </div>
-                    ) : (
-                        <div className='flex h-full w-full items-center gap-5 px-5 overflow-x-auto mb-5'>
-                            {filePreviews.map((preview, index) => (
-                                <div key={index} className='relative'>
-                                    <div className='w-27.5 h-27.5 shrink-0 rounded-[4px] outline outline-gray-100 overflow-hidden cursor-default'>
-                                        {preview.type.startsWith('image/') ? (
-                                            <Image
-                                                src={preview.url}
-                                                alt={`업로드 미리보기 ${index + 1}`}
-                                                layout='fill'
-                                                objectFit='cover'
-                                                className='rounded-[4px]'
-                                            />
-                                        ) : (
-                                            <PdfPreview fileUrl={preview.url} />
-                                        )}
-                                    </div>
-                                    <button
-                                        type='button'
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleDeleteFile(index);
-                                        }}
-                                        className='absolute top-1 right-1 p-1 rounded-full cursor-pointer bg-white border-[0.5px] border-gray-300'
-                                    >
-                                        <Image
-                                            src='/images/icons/delete-icon.svg'
-                                            alt='delete'
-                                            width={12}
-                                            height={12}
-                                        />
-                                    </button>
-                                </div>
-                            ))}
-                            <Image src='/images/icons/add-file-icon.svg' alt='add file' width={44} height={44} />
-                        </div>
-                    )}
-                    <p className='text-base-l-16-1'>png, pdf, jpg, jpeg 등</p>
-                    {/* 10MB 넘는 건 보안 검사 + 사이즈 축소 */}
-                </label>
-                <input
-                    id='file-upload'
-                    type='file'
-                    multiple
-                    className='hidden'
-                    onChange={handleFileChange}
-                    accept='image/*, application/pdf'
-                />
-            </div>
-
-            <div className='mb-20'>
-                <FormLabel htmlFor='suggestion'>기능제안</FormLabel>
-                <div className='relative'>
-                    <textarea
-                        id='suggestion'
-                        rows={5}
-                        placeholder='추가하고 싶으신 기능이 있으시다면 작성해주세요'
-                        className={`w-full rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none
-                            outline outline-gray-400 placeholder-gray-400 focus:outline-2 focus:outline-primary-400
-                            hover:shadow-level-0 ${suggestion.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
-                        maxLength={200}
-                        value={suggestion}
-                        onChange={(e) => {
-                            setSuggestion(e.target.value);
-                            if (e.target.value.length < 200) {
-                                setLimitToastShown(false);
-                            }
-                        }}
-                        onKeyDown={handleSuggestionKeyDown}
-                    />
-                    <span className='absolute bottom-5 right-5 text-base-l-16-1 text-gray-400'>({charCount}/200)</span>
-                </div>
-            </div>
-
-            <div className='mb-10'>
-                <div className='mb-10 flex items-center'>
-                    <h2 className='text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
-                    <button type='button' className='ml-1 cursor-pointer'>
-                        <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
-                    </button>
-                </div>
-                <p className='mb-1 text-base-exl-18-1 text-gray-600'>
-                    뮤룸이 상단에 나와있는 사장님의 개인데이터를 처리하는데 동의하시겠습니까?
-                </p>
-                <p className='mb-5 text-base-l-16-1 text-gray-400'>
-                    *제공해주신 개인데이터는 매물 등록을 위한 목적 외에는 사용되지 않습니다.
-                </p>
-
-                <div className='mb-10'>
-                    <label htmlFor='agreementInSubmitForm' className='group w-30 flex items-center cursor-pointer'>
+                        />
                         <input
-                            type='checkbox'
-                            id='agreementInSubmitForm'
-                            name='agreement'
-                            className='peer hidden'
-                            required
+                            ref={serviceLinkRef}
+                            id='serviceLink'
+                            placeholder='등록하신 기존 서비스 링크를 입력해주세요'
+                            className={`${inputStyles} ${
+                                serviceLink.trim() ? 'outline-gray-600 pl-4' : 'outline-gray-400 pl-11'
+                            }
+                        duration-300 group-hover:pl-4 focus:pl-4`}
+                            value={serviceLink}
                             onChange={(e) => {
-                                setAgreement(e.target.checked);
-                                handleChange('agreement');
+                                setServiceLink(e.target.value);
+                                handleChange('serviceLink');
                             }}
                         />
-                        <div
-                            ref={agreementRef}
-                            tabIndex={-1}
-                            className='relative grid h-6 w-6 place-items-center bg-white'
-                        >
-                            {!agreement && (
-                                <>
-                                    <Image
-                                        src='/images/icons/unchecked-icon.svg'
-                                        alt='check'
-                                        width={24}
-                                        height={24}
-                                        className='group-hover:hidden'
-                                    />
-                                    <Image
-                                        src='/images/icons/unchecked-icon-hovered.svg'
-                                        alt='check'
-                                        width={24}
-                                        height={24}
-                                        className='hidden group-hover:block group-hover:shadow-level-0'
-                                    />
-                                </>
-                            )}
-                            {agreement && (
-                                <Image src='/images/icons/checked-icon.svg' alt='check' width={24} height={24} />
-                            )}
-                        </div>
-
-                        <span className='ml-2 text-base-l-16-1 text-gray-600'>동의합니다</span>
-                    </label>
-                    <span className='mt-2 text-base-s-12-1 text-red-500'>{errors.agreement}</span>
+                        <ErrorMessage message={errors.serviceLink} />
+                    </div>
                 </div>
 
-                <div className='grid place-items-center'>
-                    <button
-                        type='submit'
-                        disabled={submitted}
-                        className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
+                <div className='mb-10'>
+                    <FormLabel htmlFor='roomImage'>작업실 정보 이미지</FormLabel>
+                    <p className='-mt-1 mb-2 text-base-l-16-1 text-gray-400'>
+                        등록하신 기존 서비스에 올리셨던 작업실 정보가 포함된 이미지
+                    </p>
+                    <label
+                        htmlFor='file-upload'
+                        className={`flex flex-col items-center justify-center py-10 cursor-pointer
+                        rounded-lg text-base-l-16-1 text-gray-600 hover:shadow-level-0 overflow-hidden
+                        border ${filePreviews.length == 0 ? 'border-dashed border-gray-400' : 'border-gray-600'}`}
+                    >
+                        {filePreviews.length === 0 ? (
+                            <div className='mb-3 flex items-center justify-center'>
+                                <Image src='/images/icons/upload-file-icon.svg' alt='+' width={72} height={72} />
+                            </div>
+                        ) : (
+                            <div className='flex h-full w-full items-center gap-5 px-5 overflow-x-auto mb-5'>
+                                {filePreviews.map((preview, index) => (
+                                    <div key={index} className='relative'>
+                                        <div className='w-27.5 h-27.5 shrink-0 rounded-[4px] outline outline-gray-100 overflow-hidden cursor-default'>
+                                            {preview.type.startsWith('image/') ? (
+                                                <Image
+                                                    src={preview.url}
+                                                    alt={`업로드 미리보기 ${index + 1}`}
+                                                    layout='fill'
+                                                    objectFit='cover'
+                                                    className='rounded-[4px]'
+                                                />
+                                            ) : (
+                                                <PdfPreview fileUrl={preview.url} />
+                                            )}
+                                        </div>
+                                        <button
+                                            type='button'
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleDeleteFile(index);
+                                            }}
+                                            className='absolute top-1 right-1 p-1 rounded-full cursor-pointer bg-white border-[0.5px] border-gray-300'
+                                        >
+                                            <Image
+                                                src='/images/icons/delete-icon.svg'
+                                                alt='delete'
+                                                width={12}
+                                                height={12}
+                                            />
+                                        </button>
+                                    </div>
+                                ))}
+                                <Image src='/images/icons/add-file-icon.svg' alt='add file' width={44} height={44} />
+                            </div>
+                        )}
+                        <p className='text-base-l-16-1'>png, pdf, jpg, jpeg 등</p>
+                        {/* 10MB 넘는 건 보안 검사 + 사이즈 축소 */}
+                    </label>
+                    <input
+                        id='file-upload'
+                        type='file'
+                        multiple
+                        className='hidden'
+                        onChange={handleFileChange}
+                        accept='image/*, application/pdf'
+                    />
+                </div>
+
+                <div className='mb-20'>
+                    <FormLabel htmlFor='suggestion'>기능제안</FormLabel>
+                    <div className='relative'>
+                        <textarea
+                            id='suggestion'
+                            rows={5}
+                            placeholder='추가하고 싶으신 기능이 있으시다면 작성해주세요'
+                            className={`w-full rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none
+                            outline outline-gray-400 placeholder-gray-400 focus:outline-2 focus:outline-primary-400
+                            hover:shadow-level-0 ${suggestion.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
+                            maxLength={200}
+                            value={suggestion}
+                            onChange={(e) => {
+                                setSuggestion(e.target.value);
+                                if (e.target.value.length < 200) {
+                                    setLimitToastShown(false);
+                                }
+                            }}
+                            onKeyDown={handleSuggestionKeyDown}
+                        />
+                        <span className='absolute bottom-5 right-5 text-base-l-16-1 text-gray-400'>
+                            ({charCount}/200)
+                        </span>
+                    </div>
+                </div>
+
+                <div className='mb-10'>
+                    <div className='mb-10 flex items-center'>
+                        <h2 className='text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
+                        <button type='button' className='ml-1 cursor-pointer' onClick={() => setViewModal(true)}>
+                            <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
+                        </button>
+                    </div>
+                    <p className='mb-1 text-base-exl-18-1 text-gray-600'>
+                        뮤룸이 상단에 나와있는 사장님의 개인데이터를 처리하는데 동의하시겠습니까?
+                    </p>
+                    <p className='mb-5 text-base-l-16-1 text-gray-400'>
+                        *제공해주신 개인데이터는 매물 등록을 위한 목적 외에는 사용되지 않습니다.
+                    </p>
+
+                    <div className='mb-10'>
+                        <label htmlFor='agreementInSubmitForm' className='group w-30 flex items-center cursor-pointer'>
+                            <input
+                                type='checkbox'
+                                checked={agreement}
+                                id='agreementInSubmitForm'
+                                name='agreement'
+                                className='peer hidden'
+                                required
+                                onChange={(e) => {
+                                    setAgreement(e.target.checked);
+                                    handleChange('agreement');
+                                }}
+                            />
+                            <div
+                                ref={agreementRef}
+                                tabIndex={-1}
+                                className='relative grid h-6 w-6 place-items-center bg-white'
+                            >
+                                {!agreement && (
+                                    <>
+                                        <Image
+                                            src='/images/icons/unchecked-icon.svg'
+                                            alt='check'
+                                            width={24}
+                                            height={24}
+                                            className='group-hover:hidden'
+                                        />
+                                        <Image
+                                            src='/images/icons/unchecked-icon-hovered.svg'
+                                            alt='check'
+                                            width={24}
+                                            height={24}
+                                            className='hidden group-hover:block group-hover:shadow-level-0'
+                                        />
+                                    </>
+                                )}
+                                {agreement && (
+                                    <Image src='/images/icons/checked-icon.svg' alt='check' width={24} height={24} />
+                                )}
+                            </div>
+
+                            <span className='ml-2 text-base-l-16-1 text-gray-600'>동의합니다</span>
+                        </label>
+                        <span className='mt-2 text-base-s-12-1 text-red-500'>{errors.agreement}</span>
+                    </div>
+
+                    <div className='grid place-items-center'>
+                        <button
+                            type='submit'
+                            disabled={submitted}
+                            className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
                         ${
                             !submitted ? 'bg-primary-400 cursor-pointer' : 'bg-primary-600 cursor-not-allowed'
                         } hover:bg-primary-600`}
-                    >
-                        {!submitted ? (
-                            <>
-                                <span className='mr-1'>등록하기</span>
-                                <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
-                            </>
-                        ) : (
-                            <>
-                                <span className='mr-2'>등록 완료</span>
-                                <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
-                            </>
-                        )}
-                    </button>
+                        >
+                            {!submitted ? (
+                                <>
+                                    <span className='mr-1'>등록하기</span>
+                                    <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
+                                </>
+                            ) : (
+                                <>
+                                    <span className='mr-2'>등록 완료</span>
+                                    <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </>
     );
 }

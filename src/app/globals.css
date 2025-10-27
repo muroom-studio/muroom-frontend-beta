@@ -45,6 +45,9 @@
         font-family: 'Pretendard', sans-serif;
         letter-spacing: var(--letter-spacing-base);
     }
+    button {
+        cursor: pointer;
+    }
 }
 
 /*
