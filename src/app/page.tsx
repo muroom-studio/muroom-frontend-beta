@@ -1,3 +1,5 @@
+'use client';
+
 import BackgroundWithPatterns from '@/components/BackgroundWithPatterns';
 import BackgroundWithTitle from '@/components/BackgroundWithTitle';
 import Header from '@/components/Header';
@@ -11,15 +13,21 @@ import SubmitSection from '@/components/sections/SubmitSection';
 import ExecutiveFeaturesSection from '@/components/sections/ExecutiveFeaturesSection';
 import FAQSection from '@/components/sections/FAQSection';
 import InquirySection from '@/components/sections/InquirySection';
+import Image from 'next/image';
+import TopAnchorButton from '@/components/TopAnchorButton';
 
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
 export default function Intro() {
     return (
         <div className='relative w-full min-w-306 h-full bg-white flex flex-col items-center'>
             <BackgroundWithTitle />
+
+            <Header />
+
+            <TopAnchorButton />
+
             <div className='relative z-20 w-306 min-w-306 px-25 mb-25'>
                 <div className='grid grid-cols-6 gap-x-5'>
-                    <Header />
                     <IntroSection />
                     <OpinionsSection />
                     <ProblemsSection />
