@@ -13,7 +13,6 @@ import SubmitSection from '@/components/sections/SubmitSection';
 import ExecutiveFeaturesSection from '@/components/sections/ExecutiveFeaturesSection';
 import FAQSection from '@/components/sections/FAQSection';
 import InquirySection from '@/components/sections/InquirySection';
-import Image from 'next/image';
 import TopAnchorButton from '@/components/TopAnchorButton';
 
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
