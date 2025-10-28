@@ -14,6 +14,7 @@ import ExecutiveFeaturesSection from '@/components/sections/ExecutiveFeaturesSec
 import FAQSection from '@/components/sections/FAQSection';
 import InquirySection from '@/components/sections/InquirySection';
 import TopAnchorButton from '@/components/TopAnchorButton';
+import Footer from '@/components/Footer';
 
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
 export default function Intro() {
@@ -48,10 +49,19 @@ export default function Intro() {
 
             <SubmitSection />
 
-            {/* TODO: 회색배경 */}
-            <FAQSection />
+            <div
+                id='background-with-title'
+                className='
+                col-span-full w-full bg-gray-50 py-20
+                flex flex-col justify-center items-center
+                overflow-hidden
+                '
+            >
+                <FAQSection />
+                <InquirySection />
+            </div>
 
-            <InquirySection />
+            <Footer />
         </div>
     );
 }

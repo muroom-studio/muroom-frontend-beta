@@ -139,7 +139,7 @@ const FAQItem = ({ faq, isOpened, onClick }: { faq: FAQ; isOpened: boolean; onCl
                         width={36}
                         height={36}
                         className={`transition-transform duration-300 ease-in-out ${
-                            isOpened ? 'rotate-180' : 'rotate-0'
+                            isOpened ? 'rotate-0' : 'rotate-180'
                         }`}
                     />
                 </div>

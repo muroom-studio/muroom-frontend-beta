@@ -215,7 +215,7 @@ export default function InquirySection() {
                     </div>
                 </div>
             )}
-            <section id='inquiry-section' className='w-306 min-w-306 relative px-25 mb-50'>
+            <section id='inquiry-section' className='w-306 min-w-306 relative px-25'>
                 <div className='mb-14 leading-[63px] text-[42px] font-semibold text-gray-800'>
                     <p>직접 문의하기</p>
                 </div>
@@ -356,30 +356,28 @@ export default function InquirySection() {
                             <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
                         </button>
                     </div>
-                    <div className='grid place-items-center'>
-                        <button
-                            type='submit'
-                            disabled={submitted}
-                            className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
+                    <button
+                        type='submit'
+                        disabled={submitted}
+                        className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
                                         ${
                                             !submitted
                                                 ? 'bg-primary-400 cursor-pointer'
                                                 : 'bg-primary-600 cursor-not-allowed'
                                         } hover:bg-primary-600`}
-                        >
-                            {!submitted ? (
-                                <>
-                                    <span className='mr-1'>문의하기</span>
-                                    <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
-                                </>
-                            ) : (
-                                <>
-                                    <span className='mr-2'>문의 완료</span>
-                                    <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
-                                </>
-                            )}
-                        </button>
-                    </div>
+                    >
+                        {!submitted ? (
+                            <>
+                                <span className='mr-1'>문의하기</span>
+                                <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
+                            </>
+                        ) : (
+                            <>
+                                <span className='mr-2'>문의 완료</span>
+                                <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
+                            </>
+                        )}
+                    </button>
                 </form>
             </section>
         </>

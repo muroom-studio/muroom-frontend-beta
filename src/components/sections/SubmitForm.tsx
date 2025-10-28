@@ -361,9 +361,16 @@ export default function SubmitForm() {
 
                 <div className='mb-10'>
                     <FormLabel htmlFor='roomImage'>작업실 정보 이미지</FormLabel>
-                    <p className='-mt-1 mb-2 text-base-l-16-1 text-gray-400'>
-                        등록하신 기존 서비스에 올리셨던 작업실 정보가 포함된 이미지
-                    </p>
+                    <div className='flex items-center justify-between'>
+                        <span className='-mt-1 mb-2 text-base-l-16-1 text-gray-400'>
+                            등록하신 기존 서비스에 올리셨던 작업실 정보가 포함된 이미지
+                        </span>
+                        <div className='w-[33px] flex items-center justify-around -mt-1 mb-2 text-base-l-16-1'>
+                            <span className='text-gray-600'>{filePreviews.length}</span>
+                            <span className='text-gray-400'>/</span>
+                            <span className='text-gray-400'>10</span>
+                        </div>
+                    </div>
                     <label
                         htmlFor='file-upload'
                         className={`flex flex-col items-center justify-center py-10 cursor-pointer

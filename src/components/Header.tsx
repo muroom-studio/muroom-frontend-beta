@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 export default function Header() {
     return (
-        <header className='fixed w-306 min-w-306 px-25 z-50 top-10 '>
-            <div className='w-full h-20 px-20 flex justify-between items-center bg-white rounded-100'>
+        <header className='fixed w-306 min-w-306 px-25 z-50 top-10'>
+            <div className='w-full h-20 px-20 flex justify-between items-center bg-white rounded-100 shadow-level-1'>
                 <Image src='/images/logo/logo.png' alt='muroom logo' width={128} height={25} />
                 <Link
                     href='#submit-form'
