@@ -371,56 +371,87 @@ export default function SubmitForm() {
                             <span className='text-gray-400'>10</span>
                         </div>
                     </div>
-                    <label
-                        htmlFor='file-upload'
-                        className={`flex flex-col items-center justify-center py-10 cursor-pointer
-                        rounded-lg text-base-l-16-1 text-gray-600 hover:shadow-level-0 overflow-hidden
-                        border ${filePreviews.length == 0 ? 'border-dashed border-gray-400' : 'border-gray-600'}`}
+                    <div
+                        className={`relative flex flex-col items-center justify-center
+                        rounded-lg text-base-l-16-1 text-gray-600 overflow-hidden
+                        border ${
+                            filePreviews.length == 0
+                                ? 'hover:shadow-level-0 border-dashed border-gray-400'
+                                : 'border-gray-600'
+                        }`}
                     >
                         {filePreviews.length === 0 ? (
-                            <div className='mb-3 flex items-center justify-center'>
-                                <Image src='/images/icons/upload-file-icon.svg' alt='+' width={72} height={72} />
-                            </div>
+                            <label
+                                htmlFor='file-upload'
+                                className='grid place-items-center w-full h-full py-10 cursor-pointer'
+                            >
+                                <Image
+                                    src='/images/icons/upload-file-icon.svg'
+                                    alt='+'
+                                    width={72}
+                                    height={72}
+                                    className='mb-3'
+                                />
+                                <p className='text-base-l-16-1 text-gray-600'>png, pdf, jpg, jpeg 등</p>
+                            </label>
                         ) : (
-                            <div className='flex h-full w-full items-center gap-5 px-5 overflow-x-auto mb-5'>
-                                {filePreviews.map((preview, index) => (
-                                    <div key={index} className='relative'>
-                                        <div className='w-27.5 h-27.5 shrink-0 rounded-[4px] outline outline-gray-100 overflow-hidden cursor-default'>
-                                            {preview.type.startsWith('image/') ? (
+                            <div className='relative flex h-full w-full items-center gap-5 px-5 py-10 overflow-hidden'>
+                                <div className='flex gap-5 overflow-x-auto'>
+                                    {filePreviews.map((preview, index) => (
+                                        <div key={index} className='relative'>
+                                            <div className='w-32.5 h-32.5 shrink-0 rounded-[4px] outline outline-gray-100 overflow-hidden cursor-default'>
+                                                {preview.type.startsWith('image/') ? (
+                                                    <Image
+                                                        src={preview.url}
+                                                        alt={`업로드 미리보기 ${index + 1}`}
+                                                        layout='fill'
+                                                        objectFit='cover'
+                                                        className='rounded-[4px]'
+                                                    />
+                                                ) : (
+                                                    <PdfPreview fileUrl={preview.url} />
+                                                )}
+                                            </div>
+                                            <button
+                                                type='button'
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleDeleteFile(index);
+                                                }}
+                                                className='absolute top-1 right-1 p-1 rounded-full cursor-pointer bg-white border-[0.5px] border-gray-300'
+                                            >
                                                 <Image
-                                                    src={preview.url}
-                                                    alt={`업로드 미리보기 ${index + 1}`}
-                                                    layout='fill'
-                                                    objectFit='cover'
-                                                    className='rounded-[4px]'
+                                                    src='/images/icons/delete-icon.svg'
+                                                    alt='delete'
+                                                    width={12}
+                                                    height={12}
                                                 />
-                                            ) : (
-                                                <PdfPreview fileUrl={preview.url} />
-                                            )}
+                                            </button>
                                         </div>
-                                        <button
-                                            type='button'
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handleDeleteFile(index);
-                                            }}
-                                            className='absolute top-1 right-1 p-1 rounded-full cursor-pointer bg-white border-[0.5px] border-gray-300'
-                                        >
-                                            <Image
-                                                src='/images/icons/delete-icon.svg'
-                                                alt='delete'
-                                                width={12}
-                                                height={12}
-                                            />
-                                        </button>
+                                    ))}
+                                </div>
+                                <label
+                                    htmlFor='file-upload'
+                                    className='absolute right-0 w-42.5 h-32.5 grid place-items-center bg-white cursor-pointer'
+                                >
+                                    <div
+                                        className='w-32.5 h-32.5 rounded-[4px] border border-gray-300 border-dashed flex flex-col items-center justify-center
+                                    hover:shadow-level-0'
+                                    >
+                                        <Image
+                                            src='/images/icons/add-file-circular-icon.svg'
+                                            alt='add file'
+                                            width={22}
+                                            height={22}
+                                            className='mb-4'
+                                        />
+                                        <p className='text-base-s-12-1 text-gray-600'>png, pdf, jpg, jpeg 등</p>
                                     </div>
-                                ))}
-                                <Image src='/images/icons/add-file-icon.svg' alt='add file' width={44} height={44} />
+                                </label>
                             </div>
                         )}
-                        <p className='text-base-l-16-1'>png, pdf, jpg, jpeg 등</p>
-                        {/* 10MB 넘는 건 보안 검사 + 사이즈 축소 */}
-                    </label>
+                    </div>
+
                     <input
                         id='file-upload'
                         type='file'
