@@ -53,7 +53,7 @@ export default function OpinionsSection() {
                             <div className='leading-[150%] text-[14px] desktop:text-[1rem] font-medium text-gray-500'>
                                 <p>{opinion.description}</p>
                             </div>
-                            <div className='absolute bottom-10 py-2.5 px-3 flex items-center rounded-[10px] bg-primary-50'>
+                            <div className='absolute bottom-10 py-2.5 px-2 desktop:px-3 flex items-center rounded-[10px] bg-primary-50'>
                                 <span className='leading-5.25 text-[0.875rem] font-semibold text-primary-800 mr-3'>
                                     {opinion.author.age}
                                 </span>
