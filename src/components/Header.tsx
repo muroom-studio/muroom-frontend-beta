@@ -93,13 +93,7 @@ export default function Header() {
             // Hiding: 헤더 높이(h-20, 80px) + 상단 마진(top-10, 40px) = 120px 만큼 위로 올림
         >
             <div className='w-full h-15 desktop:h-20 desktop:px-20 flex justify-center desktop:justify-between items-center bg-white rounded-100 shadow-level-1'>
-                <Image
-                    src='/images/logo/logo.png'
-                    alt='muroom logo'
-                    width={128}
-                    height={25}
-                    className='w-32 h-[25px]'
-                />
+                <Image src='/images/logo/logo.png' alt='muroom logo' width={128} height={25} className='w-32 h-auto' />
                 <Link
                     href='#submit-form'
                     className='hidden desktop:grid place-items-center w-[125px] h-9 text-base-m-14-2 text-white bg-primary-600 rounded-8'
