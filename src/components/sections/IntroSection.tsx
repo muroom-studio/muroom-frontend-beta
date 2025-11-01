@@ -40,7 +40,7 @@ export default function IntroSection() {
                     width={1024}
                     height={576}
                     priority={true}
-                    className='hidden desktop:block'
+                    className='hidden desktop:block w-5xl h-[576px]'
                 />
                 <Image
                     src='/images/mobile-mockup.svg'
@@ -48,7 +48,7 @@ export default function IntroSection() {
                     width={239}
                     height={482}
                     priority={true}
-                    className='desktop:hidden block'
+                    className='desktop:hidden block w-[239px] h-[482px]'
                 />
             </div>
         </section>

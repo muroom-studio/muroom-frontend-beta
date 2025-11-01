@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Feature {
     id: number;
@@ -63,7 +63,7 @@ const features: Feature[] = [
         title: '비교함',
         description: '찜한 작업실들 중 골라\n쉽게 비교하고 최종결정할 수 있어요',
         icon: 'comparing-icon.svg',
-        image: 'comparing-mockup.png',
+        image: 'comparing-mockup.svg',
         imageWidth: 478,
         imageHeight: 470,
         imagePosition: 'left-[32px] top-[169px]',
@@ -85,16 +85,23 @@ const FeatureCard = ({ feature }: { feature: Feature }) => {
     return (
         <div className='relative h-107 py-5 px-8.5 bg-white border border-primary-100 rounded-[10px] shadow-level-0 overflow-hidden'>
             <div className='flex'>
-                <Image src={`/images/icons/${feature.icon}`} alt={`${feature.title}`} width={24} height={24} />
+                <Image
+                    src={`/images/icons/${feature.icon}`}
+                    alt={`${feature.title}`}
+                    width={24}
+                    height={24}
+                    className='w-6 h-6'
+                />
                 <span className='ml-2 mb-2 leading-11 text-2xl font-semibold text-gray-700'>{feature.title}</span>
             </div>
             <p className='whitespace-pre-line leading-6 text-[1rem] font-medium text-gray-500'>{feature.description}</p>
             <Image
                 src={`/images/${feature.image}`}
                 alt={`${feature.title}-mockup`}
+                loading='eager'
                 width={feature.imageWidth}
                 height={feature.imageHeight}
-                className={`absolute max-w-none ${feature.imagePosition}`}
+                className={`absolute max-w-none w-auto h-auto ${feature.imagePosition}`}
             />
             {feature.hasWhiteBottom && (
                 <div className='absolute left-0 bottom-0 w-full h-full bg-linear-to-t from-white to-transparent to-[68px]'></div>
@@ -129,71 +136,77 @@ export default function FeaturesSection() {
         }
     }, []);
 
-    // 2. 자동 스크롤 및 이벤트 리스너 설정
+    const stopScroll = useCallback(() => {
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+        }
+    }, []);
+
+    const autoScroll = useCallback(() => {
+        if (isInteractingRef.current) return;
+        if (!trackRef.current || scrollWidth === 0) return;
+
+        const el = trackRef.current;
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        el.scrollLeft += isSafari ? 3 : 1;
+
+        if (el.scrollLeft >= scrollWidth) {
+            el.scrollLeft = el.scrollLeft - scrollWidth;
+        }
+        animationFrameRef.current = requestAnimationFrame(autoScroll);
+    }, [scrollWidth]); // scrollWidth가 변경되면 이 함수도 최신화됨
+
+    const handleInteractionStart = useCallback(() => {
+        isInteractingRef.current = true;
+        stopScroll();
+    }, [stopScroll]);
+
+    const handleInteractionEnd = useCallback(() => {
+        isInteractingRef.current = false;
+        // 직접 호출 대신 requestAnimationFrame을 통해 스크롤 재시작
+        if (!animationFrameRef.current) {
+            animationFrameRef.current = requestAnimationFrame(autoScroll);
+        }
+    }, [autoScroll]);
+
+    const handleManualScroll = useCallback(() => {
+        if (!trackRef.current || scrollWidth === 0) return;
+        // 사용자가 직접 스크롤할 때(isInteractingRef.current === true)만 루프 처리
+        if (isInteractingRef.current) {
+            const el = trackRef.current;
+            if (el.scrollLeft >= scrollWidth) {
+                el.scrollLeft = el.scrollLeft - scrollWidth;
+            }
+        }
+    }, [scrollWidth]);
+
+    // 2. [수정] 이벤트 리스너 등록/제거 전용 useEffect
     useEffect(() => {
         const el = trackRef.current;
+        // scrollWidth가 계산된 후에만 리스너 등록
         if (!el || scrollWidth === 0) return;
 
-        // --- 자동 스크롤 함수 ---
-        const autoScroll = () => {
-            // 사용자가 상호작용 중이면 자동 스크롤 중지
-            if (isInteractingRef.current) return;
+        // Safari 강제 초기화
+        isInteractingRef.current = false;
 
-            el.scrollLeft += 0.5; // 스크롤 속도 (조절 가능)
-
-            // 무한 루프 로직: 스크롤이 첫 번째 세트 끝에 도달하면
-            if (el.scrollLeft >= scrollWidth) {
-                // 스크롤 위치를 점프시킵니다.
-                // (el.scrollLeft - scrollWidth)를 해줘서
-                // 0.5씩 더해진 값을 보존하여 부드럽게 연결
-                el.scrollLeft = el.scrollLeft - scrollWidth;
-            }
-            animationFrameRef.current = requestAnimationFrame(autoScroll);
-        };
-
-        const stopScroll = () => {
-            if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-            }
-        };
-
-        // --- 사용자 상호작용 이벤트 핸들러 ---
-        const handleInteractionStart = () => {
-            isInteractingRef.current = true;
-            stopScroll();
-        };
-
-        const handleInteractionEnd = () => {
-            isInteractingRef.current = false;
-            requestAnimationFrame(autoScroll); // 즉시 스크롤 재개
-        };
-
-        // --- 스크롤 이벤트 (수동 스크롤 루프) ---
-        // 사용자가 *수동으로* 스크롤할 때의 루프 처리
-        const handleManualScroll = () => {
-            if (el.scrollLeft >= scrollWidth) {
-                el.scrollLeft = el.scrollLeft - scrollWidth;
-            }
-        };
-
-        // 이벤트 리스너 등록
+        // 이벤트 리스너 등록 (useCallback으로 캐시된 함수들 사용)
         el.addEventListener('scroll', handleManualScroll);
-        // 마우스 호버
         el.addEventListener('mouseenter', handleInteractionStart);
         el.addEventListener('mouseleave', handleInteractionEnd);
-        // 마우스 드래그 (스크롤바 클릭 포함)
         el.addEventListener('mousedown', handleInteractionStart);
         el.addEventListener('mouseup', handleInteractionEnd);
-        // 터치 스크린
         el.addEventListener('touchstart', handleInteractionStart, { passive: true });
         el.addEventListener('touchend', handleInteractionEnd);
+        el.addEventListener('touchcancel', handleInteractionEnd); // 터치 취소
+        window.addEventListener('blur', handleInteractionEnd); // 탭 전환
 
         // 자동 스크롤 시작
         autoScroll();
 
         // 컴포넌트 언마운트 시 정리
         return () => {
-            stopScroll();
+            stopScroll(); // 모든 애니메이션 프레임 중지
             el.removeEventListener('scroll', handleManualScroll);
             el.removeEventListener('mouseenter', handleInteractionStart);
             el.removeEventListener('mouseleave', handleInteractionEnd);
@@ -201,8 +214,10 @@ export default function FeaturesSection() {
             el.removeEventListener('mouseup', handleInteractionEnd);
             el.removeEventListener('touchstart', handleInteractionStart);
             el.removeEventListener('touchend', handleInteractionEnd);
+            el.removeEventListener('touchcancel', handleInteractionEnd);
+            window.removeEventListener('blur', handleInteractionEnd);
         };
-    }, [scrollWidth]);
+    }, [scrollWidth, autoScroll, handleInteractionStart, handleInteractionEnd, handleManualScroll, stopScroll]); // 모든 핸들러 의존성 추가
 
     return (
         <>

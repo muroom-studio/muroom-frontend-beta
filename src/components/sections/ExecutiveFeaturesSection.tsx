@@ -66,14 +66,14 @@ const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
                         alt={`${feature.title}`}
                         width={80}
                         height={80}
-                        className='mb-4 block group-hover:hidden'
+                        className='mb-4 block group-hover:hidden w-20 h-20'
                     />
                     <Image
                         src={`/images/icons/${feature.iconHovered}`}
                         alt={`${feature.title}`}
                         width={80}
                         height={80}
-                        className='mb-4 hidden group-hover:block'
+                        className='mb-4 hidden group-hover:block w-20 h-20'
                     />
                     <span className='leading-9 text-2xl font-bold group-hover:text-primary-500'>{feature.title}</span>
                 </div>
@@ -97,14 +97,14 @@ const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
                         alt={`${feature.title}`}
                         width={80}
                         height={80}
-                        className='mb-4 block group-hover:hidden'
+                        className='mb-4 block group-hover:hidden w-20 h-20'
                     />
                     <Image
                         src={`/images/icons/${feature.iconHovered}`}
                         alt={`${feature.title}`}
                         width={80}
                         height={80}
-                        className='mb-4 hidden group-hover:block'
+                        className='mb-4 hidden group-hover:block w-20 h-20'
                     />
                     <span className='leading-9 text-2xl font-bold group-hover:text-primary-500'>{feature.title}</span>
                 </div>

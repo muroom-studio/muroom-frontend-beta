@@ -337,7 +337,13 @@ export default function SubmitForm() {
                                 onPointerCancel={handleDragEnd} // 드래그가 비정상적으로 취소될 때 (예: 알림)
                                 className='cursor-grab active:cursor-grabbing touch-none w-full h-full grid place-items-center'
                             >
-                                <Image src='/images/icons/drag-handle-icon.svg' alt='close' width={32} height={4} />
+                                <Image
+                                    src='/images/icons/drag-handle-icon.svg'
+                                    alt='close'
+                                    width={32}
+                                    height={4}
+                                    className='w-8 h-1'
+                                />
                             </button>
                         </div>
                         <div className='px-5 pt-2 pb-5'>
@@ -399,7 +405,13 @@ export default function SubmitForm() {
                     <div className='bg-white w-105 rounded-[10px]'>
                         <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
                             <button onClick={() => setViewModal(false)} className='cursor-pointer'>
-                                <Image src='/images/icons/delete-icon.svg' alt='close' width={24} height={24} />
+                                <Image
+                                    src='/images/icons/delete-icon.svg'
+                                    alt='close'
+                                    width={24}
+                                    height={24}
+                                    className='w-6 h-6'
+                                />
                             </button>
                         </div>
                         <div className='px-5 py-6'>
@@ -537,7 +549,7 @@ export default function SubmitForm() {
                             alt='link'
                             width={20}
                             height={20}
-                            className={`absolute left-3 desktop:left-4 top-1/2 -translate-y-1/2
+                            className={`absolute left-3 desktop:left-4 top-1/2 -translate-y-1/2 w-5 h-5
                         duration-300 group-hover:opacity-0 group-focus-within:opacity-0 ${
                             serviceLink.trim() ? 'opacity-0' : 'opacity-100'
                         }`}
@@ -605,7 +617,7 @@ export default function SubmitForm() {
                                     alt='+'
                                     width={72}
                                     height={72}
-                                    className='mb-3'
+                                    className='mb-3 w-[72px] h-[72px]'
                                 />
                                 <p className='text-base-l-16-1 text-gray-600'>png, pdf, jpg, jpeg 등</p>
                             </label>
@@ -621,7 +633,7 @@ export default function SubmitForm() {
                                                         alt={`업로드 미리보기 ${index + 1}`}
                                                         layout='fill'
                                                         objectFit='cover'
-                                                        className='rounded-[4px]'
+                                                        className='rounded-[4px] w-auto h-auto'
                                                     />
                                                 ) : (
                                                     <PdfPreview fileUrl={preview.url} />
@@ -640,6 +652,7 @@ export default function SubmitForm() {
                                                     alt='delete'
                                                     width={12}
                                                     height={12}
+                                                    className='w-3 h-3'
                                                 />
                                             </button>
                                         </div>
@@ -658,7 +671,7 @@ export default function SubmitForm() {
                                             alt='add file'
                                             width={22}
                                             height={22}
-                                            className='mb-4'
+                                            className='mb-4 w-[22px] h-[22px]'
                                         />
                                         <p className='text-base-s-12-1 text-gray-600'>png, pdf, jpg, jpeg 등</p>
                                     </div>
@@ -707,7 +720,13 @@ export default function SubmitForm() {
                     <div className='mb-5 desktop:mb-10 flex items-center'>
                         <h2 className='text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
                         <button type='button' className='ml-1 cursor-pointer' onClick={() => setViewModal(true)}>
-                            <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
+                            <Image
+                                src='/images/icons/right-arrow-icon-dark.svg'
+                                alt=''
+                                width={24}
+                                height={24}
+                                className='w-6 h-6'
+                            />
                         </button>
                     </div>
                     <p className='mb-1 text-base-exl-18-1 text-gray-600'>
@@ -749,19 +768,25 @@ export default function SubmitForm() {
                                             alt='check'
                                             width={24}
                                             height={24}
-                                            className='group-hover:hidden'
+                                            className='group-hover:hidden w-6 h-6'
                                         />
                                         <Image
                                             src='/images/icons/unchecked-icon-hovered.svg'
                                             alt='check'
                                             width={24}
                                             height={24}
-                                            className='hidden group-hover:block group-hover:shadow-level-0'
+                                            className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
                                         />
                                     </>
                                 )}
                                 {agreement && (
-                                    <Image src='/images/icons/checked-icon.svg' alt='check' width={24} height={24} />
+                                    <Image
+                                        src='/images/icons/checked-icon.svg'
+                                        alt='check'
+                                        width={24}
+                                        height={24}
+                                        className=' w-6 h-6'
+                                    />
                                 )}
                             </div>
 
@@ -782,12 +807,24 @@ export default function SubmitForm() {
                             {!submitted ? (
                                 <>
                                     <span className='mr-1'>등록하기</span>
-                                    <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
+                                    <Image
+                                        src='/images/icons/right-arrow-icon.svg'
+                                        alt='send'
+                                        width={24}
+                                        height={24}
+                                        className=' w-6 h-6'
+                                    />
                                 </>
                             ) : (
                                 <>
                                     <span className='mr-2'>등록 완료</span>
-                                    <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
+                                    <Image
+                                        src='/images/icons/check-icon.svg'
+                                        alt='check'
+                                        width={12}
+                                        height={9}
+                                        className=' w-3 h-[9px]'
+                                    />
                                 </>
                             )}
                         </button>

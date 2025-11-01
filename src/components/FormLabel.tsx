@@ -10,7 +10,15 @@ export default function FormLabel({ htmlFor, children, required = false }: FormL
     return (
         <label htmlFor={htmlFor} className='flex items-center text-base-exl-18-2 text-gray-800 mb-2'>
             <span className='mr-1'>{children}</span>
-            {required && <Image src='/images/icons/essential-icon.svg' alt='essential' width={16} height={16} />}
+            {required && (
+                <Image
+                    src='/images/icons/essential-icon.svg'
+                    alt='essential'
+                    width={16}
+                    height={16}
+                    className='w-4 h-4'
+                />
+            )}
         </label>
     );
 }

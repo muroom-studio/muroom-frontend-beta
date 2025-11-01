@@ -21,14 +21,14 @@ export default function BackgroundWithPatterns() {
                 alt='hexagonal pattern'
                 width={90}
                 height={90}
-                className='absolute top-27 desktop:top-38 left-18 opacity-30 desktop:left-28 desktop:opacity-100'
+                className='absolute top-27 desktop:top-38 left-18 opacity-30 desktop:left-28 desktop:opacity-100 w-[90px] h-[90px]'
             />
             <Image
                 src='/images/patterns/hexagon-2.svg'
                 alt='hexagonal pattern'
                 width={55}
                 height={55}
-                className='absolute top-12 right-12 desktop:right-70'
+                className='absolute top-12 right-12 desktop:right-70 w-[70px] h-[70px]'
             />
 
             <SquarePattern styles={'top-8 left-45 bg-primary-200 hidden desktop:block'} />
@@ -43,14 +43,14 @@ export default function BackgroundWithPatterns() {
                 alt='hexagonal pattern'
                 width={190.64}
                 height={188.93}
-                className='absolute top-56 desktop:top-113 right-5'
+                className='absolute top-56 desktop:top-113 right-5 w-[190.64px] h-[188.93px]'
             />
             <Image
                 src='/images/patterns/iconic-1.svg'
                 alt='hexagonal pattern'
                 width={107.48}
                 height={106.52}
-                className='absolute top-190 left-12 hidden desktop:block'
+                className='absolute top-190 left-12 hidden desktop:block w-[107.48px] h-[106.52px]'
             />
         </div>
     );

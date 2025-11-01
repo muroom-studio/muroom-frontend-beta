@@ -281,7 +281,13 @@ export default function InquirySection() {
                                 onPointerCancel={handleDragEnd} // 드래그가 비정상적으로 취소될 때 (예: 알림)
                                 className='cursor-grab active:cursor-grabbing touch-none w-full h-full grid place-items-center'
                             >
-                                <Image src='/images/icons/drag-handle-icon.svg' alt='close' width={32} height={4} />
+                                <Image
+                                    src='/images/icons/drag-handle-icon.svg'
+                                    alt='close'
+                                    width={32}
+                                    height={4}
+                                    className='w-8 h-1'
+                                />
                             </button>
                         </div>
                         <div className='px-5 pt-2 pb-5'>
@@ -335,7 +341,13 @@ export default function InquirySection() {
                     <div className='bg-white w-105 rounded-[10px]'>
                         <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
                             <button onClick={() => setViewModal(false)} className='cursor-pointer'>
-                                <Image src='/images/icons/delete-icon.svg' alt='close' width={24} height={24} />
+                                <Image
+                                    src='/images/icons/delete-icon.svg'
+                                    alt='close'
+                                    width={24}
+                                    height={24}
+                                    className='w-6 h-6'
+                                />
                             </button>
                         </div>
                         <div className='px-5 py-6'>
@@ -514,14 +526,14 @@ export default function InquirySection() {
                                                 alt='check'
                                                 width={24}
                                                 height={24}
-                                                className='group-hover:hidden '
+                                                className='group-hover:hidden w-6 h-6'
                                             />
                                             <Image
                                                 src='/images/icons/unchecked-icon-hovered.svg'
                                                 alt='check'
                                                 width={24}
                                                 height={24}
-                                                className='hidden group-hover:block group-hover:shadow-level-0'
+                                                className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
                                             />
                                         </>
                                     )}
@@ -531,6 +543,7 @@ export default function InquirySection() {
                                             alt='check'
                                             width={24}
                                             height={24}
+                                            className=' w-6 h-6'
                                         />
                                     )}
                                 </div>
@@ -544,7 +557,13 @@ export default function InquirySection() {
                             </span>
                         </div>
                         <button type='button' className='ml-1' onClick={() => setViewModal(true)}>
-                            <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
+                            <Image
+                                src='/images/icons/right-arrow-icon-dark.svg'
+                                alt=''
+                                width={24}
+                                height={24}
+                                className=' w-6 h-6'
+                            />
                         </button>
                     </div>
                     <div className='grid place-items-center desktop:place-items-start'>
@@ -561,12 +580,24 @@ export default function InquirySection() {
                             {!submitted ? (
                                 <>
                                     <span className='mr-1'>문의하기</span>
-                                    <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
+                                    <Image
+                                        src='/images/icons/right-arrow-icon.svg'
+                                        alt='send'
+                                        width={24}
+                                        height={24}
+                                        className=' w-6 h-6'
+                                    />
                                 </>
                             ) : (
                                 <>
                                     <span className='mr-2'>문의 완료</span>
-                                    <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
+                                    <Image
+                                        src='/images/icons/check-icon.svg'
+                                        alt='check'
+                                        width={12}
+                                        height={9}
+                                        className='w-3 h-[9px]'
+                                    />
                                 </>
                             )}
                         </button>

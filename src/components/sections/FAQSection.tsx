@@ -140,7 +140,7 @@ const FAQItem = ({ faq, isOpened, onClick }: { faq: FAQ; isOpened: boolean; onCl
                         alt={!isOpened ? '답변 보기' : '답변 닫기'}
                         width={36}
                         height={36}
-                        className={`hidden desktop:block transition-transform duration-300 ease-in-out ${
+                        className={`hidden desktop:block transition-transform duration-300 ease-in-out w-9 h-9 ${
                             isOpened ? 'rotate-0' : 'rotate-180'
                         }`}
                     />
@@ -149,7 +149,7 @@ const FAQItem = ({ faq, isOpened, onClick }: { faq: FAQ; isOpened: boolean; onCl
                         alt={!isOpened ? '답변 보기' : '답변 닫기'}
                         width={24}
                         height={24}
-                        className={`desktop:hidden transition-transform duration-300 ease-in-out ${
+                        className={`desktop:hidden transition-transform duration-300 ease-in-out w-6 h-6 ${
                             isOpened ? 'rotate-0' : 'rotate-180'
                         }`}
                     />

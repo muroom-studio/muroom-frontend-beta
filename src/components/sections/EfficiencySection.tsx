@@ -23,14 +23,14 @@ export default function EfficiencySection() {
                 alt='test-result'
                 width={1024}
                 height={449}
-                className='-mt-1.5 hidden desktop:block'
+                className='-mt-1.5 hidden desktop:block w-5xl h-[449px]'
             />
             <Image
                 src='/images/test-result-mobile.svg'
                 alt='test-result'
                 width={410}
                 height={511}
-                className='desktop:hidden block w-full'
+                className='desktop:hidden block w-[410px] h-[511px]'
             />
         </section>
     );
