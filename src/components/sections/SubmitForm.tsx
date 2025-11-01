@@ -219,12 +219,6 @@ export default function SubmitForm() {
         console.log('제출할 데이터:', formData);
     };
 
-    const handleChange = (field: keyof FormErrors) => {
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: undefined }));
-        }
-    };
-
     const handleSuggestionKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (suggestion.length >= 200 && e.key.length === 1 && !limitToastShown) {
             toast('최대 200자까지 입력할 수 있습니다.');
@@ -268,7 +262,7 @@ export default function SubmitForm() {
                                 className='border border-gray-300 w-full h-14 rounded-[4px]'
                                 onClick={() => {
                                     setAgreement(true);
-                                    handleChange('agreement');
+                                    setErrors((prev) => ({ ...prev, agreement: undefined }));
                                     setViewModal(false);
                                 }}
                             >
@@ -296,8 +290,19 @@ export default function SubmitForm() {
                                 className={`${inputStyles} ${name.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
                                 value={name}
                                 onChange={(e) => {
-                                    setName(e.target.value);
-                                    handleChange('name');
+                                    const nameInput = e.target.value;
+                                    setName(nameInput);
+
+                                    if (!nameInput.trim()) {
+                                        setErrors((prev) => ({ ...prev, name: '성함을 입력해주세요.' }));
+                                    } else if (!validateName(nameInput.trim())) {
+                                        setErrors((prev) => ({
+                                            ...prev,
+                                            name: '올바른 성함(2~30자, 한글/영문)을 입력해주세요.',
+                                        }));
+                                    } else {
+                                        setErrors((prev) => ({ ...prev, name: undefined }));
+                                    }
                                 }}
                             />
                             <ErrorMessage message={errors.name} />
@@ -318,7 +323,17 @@ export default function SubmitForm() {
                                 onChange={(e) => {
                                     const formattedPhone = formatPhoneNumber(e.target.value);
                                     setPhone(formattedPhone);
-                                    handleChange('phone');
+
+                                    if (!formattedPhone.trim()) {
+                                        setErrors((prev) => ({ ...prev, phone: '전화번호를 입력해주세요.' }));
+                                    } else if (!validatePhone(formattedPhone.trim())) {
+                                        setErrors((prev) => ({
+                                            ...prev,
+                                            phone: '올바른 전화번호 형식(010-1234-5678)을 입력해주세요.',
+                                        }));
+                                    } else {
+                                        setErrors((prev) => ({ ...prev, phone: undefined }));
+                                    }
                                 }}
                             />
                             <ErrorMessage message={errors.phone} />
@@ -351,8 +366,22 @@ export default function SubmitForm() {
                         duration-300 group-hover:pl-4 focus:pl-4`}
                             value={serviceLink}
                             onChange={(e) => {
-                                setServiceLink(e.target.value);
-                                handleChange('serviceLink');
+                                const serviceLinkInput = e.target.value;
+                                setServiceLink(serviceLinkInput);
+
+                                if (!serviceLinkInput.trim()) {
+                                    setErrors((prev) => ({
+                                        ...prev,
+                                        serviceLink: '올바른 서비스 링크를 입력해주세요.',
+                                    }));
+                                } else if (!serviceLinkInput.includes('.')) {
+                                    setErrors((prev) => ({
+                                        ...prev,
+                                        serviceLink: '올바른 서비스 링크를 입력해주세요.',
+                                    }));
+                                } else {
+                                    setErrors((prev) => ({ ...prev, serviceLink: undefined }));
+                                }
                             }}
                         />
                         <ErrorMessage message={errors.serviceLink} />
@@ -512,8 +541,14 @@ export default function SubmitForm() {
                                 className='peer hidden'
                                 required
                                 onChange={(e) => {
-                                    setAgreement(e.target.checked);
-                                    handleChange('agreement');
+                                    const isChecked = e.target.checked;
+                                    setAgreement(isChecked);
+
+                                    if (!isChecked) {
+                                        setErrors((prev) => ({ ...prev, agreement: '개인정보 수집에 동의해주세요.' }));
+                                    } else {
+                                        setErrors((prev) => ({ ...prev, agreement: undefined }));
+                                    }
                                 }}
                             />
                             <div
