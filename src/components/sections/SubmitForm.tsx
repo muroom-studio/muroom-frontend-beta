@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ChangeEvent, KeyboardEvent, ReactNode, useRef, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useToast } from '../ToastProvider';
 import ErrorMessage from '../ErrorMessage';
 import dynamic from 'next/dynamic';
@@ -39,6 +39,7 @@ export default function SubmitForm() {
     const [phone, setPhone] = useState('');
     const [serviceLink, setServiceLink] = useState('');
     const [suggestion, setSuggestion] = useState('');
+    const charCount = suggestion.length;
     const [agreement, setAgreement] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [roomImages, setRoomImages] = useState<File[]>([]);
@@ -52,7 +53,71 @@ export default function SubmitForm() {
     const serviceLinkRef = useRef<HTMLInputElement>(null);
     const agreementRef = useRef<HTMLDivElement>(null);
 
-    const charCount = suggestion.length;
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragY, setDragY] = useState(0); // 현재 드래그된 Y축 거리
+    const dragStartY = useRef<number>(0);
+    const DRAG_THRESHOLD = 100;
+    /** 드래그 시작 (손가락/마우스 누름) */
+    const handleDragStart = (e: React.PointerEvent<HTMLElement>) => {
+        // e.preventDefault(); // 버튼의 기본 클릭 이벤트를 막을 수 있으므로 주석 처리
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        dragStartY.current = e.clientY;
+        setIsDragging(true); // "드래그 중" 상태로 변경
+    };
+    /** 드래그 중 (손가락/마우스 이동) */
+    const handleDragMove = (e: React.PointerEvent<HTMLElement>) => {
+        if (!isDragging) return; // 드래그 중이 아니면 무시
+
+        e.preventDefault(); // 페이지 스크롤 방지
+        const currentY = e.clientY;
+        const deltaY = currentY - dragStartY.current;
+
+        // 1. 아래로만 드래그되도록 (위로 올리는 건 무시)
+        // 2. 모달이 따라오는 느낌을 주기 위해 dragY 상태 업데이트
+        setDragY(Math.max(0, deltaY));
+    };
+    /** 드래그 종료 (손가락/마우스 뗌) */
+    const handleDragEnd = (e: React.PointerEvent<HTMLElement>) => {
+        if (!isDragging) return;
+
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+        setIsDragging(false); // "드래그 종료" 상태
+
+        // 1. 닫기 기준(THRESHOLD)을 넘었는지 확인
+        if (dragY > DRAG_THRESHOLD) {
+            setViewModal(false); // 모달 닫기
+        }
+
+        // 2. 기준을 넘지 않았으면 원위치로 스냅백
+        //    (기준을 넘었어도 닫히기 전 상태를 리셋)
+        setDragY(0);
+        dragStartY.current = 0;
+    };
+
+    // 480px 미만인지 여부를 저장합니다. (기본값: false)
+    const [isMobileView, setIsMobileView] = useState(false);
+    useEffect(() => {
+        const MOBILE_WIDTH_THRESHOLD = 480;
+
+        const checkIsMobile = () => {
+            return window.innerWidth < MOBILE_WIDTH_THRESHOLD;
+        };
+
+        // 1. 컴포넌트가 클라이언트에 마운트될 때 초기 상태 설정
+        setIsMobileView(checkIsMobile());
+
+        // 2. 창 크기가 변경될 때마다 상태 업데이트
+        const handleResize = () => {
+            setIsMobileView(checkIsMobile());
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // 3. 컴포넌트 언마운트 시 이벤트 리스너 제거 (메모리 누수 방지)
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newFiles = e.target.files;
@@ -227,7 +292,109 @@ export default function SubmitForm() {
 
     return (
         <>
-            {viewModal && (
+            {isMobileView && (
+                <>
+                    {' '}
+                    <div
+                        className={`fixed z-998 left-0 top-0 w-full h-full grid place-items-center
+                        transition-all duration-500
+                        ${
+                            viewModal
+                                ? 'opacity-100 visibility-visible bg-black/50'
+                                : 'opacity-0 visibility-hidden bg-transparent pointer-events-none'
+                        }`}
+                        // [수정]
+                        // 1. (보일 때) opacity-100, visibility-visible, bg-black/50
+                        // 2. (숨길 때) opacity-0, visibility-hidden, bg-transparent
+                        // 3. (숨길 때) pointer-events-none: 숨겨져 있을 때 클릭 이벤트를 막음
+                    ></div>
+                    {/* <div
+                        className={`fixed z-999 left-0 bottom-0 bg-white w-full rounded-[10px]
+                            transition-all duration-300
+                        ${viewModal ? 'translate-y-0' : 'translate-y-150'}`}
+                    > */}
+                    <div
+                        className={`fixed z-999 left-0 bottom-0 bg-white w-full rounded-t-[10px]
+                ${isDragging ? '' : 'transition-transform duration-300'}
+            `}
+                        // [수정]
+                        // 1. 'translate-y-0', 'translate-y-150' 제거
+                        // 2. 드래그 중(isDragging)일 때는 transition을 제거해야 부드럽게 따라옴
+
+                        style={{
+                            // 3. style에서 transform을 직접 제어
+                            transform: viewModal
+                                ? `translateY(${dragY}px)` // 드래그 중인 Y값 적용
+                                : 'translateY(100%)', // 닫혔을 때 (150% 대신 100%로 수정)
+                        }}
+                        onClick={(e) => e.stopPropagation()} // 배경 클릭 시 닫힘 방지
+                    >
+                        <div className='w-full h-9 py-2 grid place-items-center'>
+                            <button
+                                onPointerDown={handleDragStart}
+                                onPointerMove={handleDragMove}
+                                onPointerUp={handleDragEnd}
+                                onPointerCancel={handleDragEnd} // 드래그가 비정상적으로 취소될 때 (예: 알림)
+                                className='cursor-grab active:cursor-grabbing touch-none w-full h-full grid place-items-center'
+                            >
+                                <Image src='/images/icons/drag-handle-icon.svg' alt='close' width={32} height={4} />
+                            </button>
+                        </div>
+                        <div className='px-5 pt-2 pb-5'>
+                            <h2 className='text-title-s-22-2 text-gray-800 mb-6'>개인정보 수집 및 이용 동의</h2>
+                            <p className='mb-8'>
+                                수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
+                                안내해 드리오니 자세히 읽으신 후 동의해 주시기 바랍니다.
+                            </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 및 이용 목적</h3>
+                            <ul className='text-base-l-16-1 text-gray-600 mb-6'>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>페이지 내
+                                    매물 등록
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>상담 접수
+                                    및 처리
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>처리 내역
+                                    보관 용도
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>중복 상담
+                                    확인
+                                </li>
+                            </ul>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
+                                (필수) 성함, 전화번호, 기존 서비스 링크
+                            </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
+                                수집 이용 동의일로부터 12개월(단, 요청시 삭제)
+                            </p>
+                            <hr className='text-gray-300 mb-5' />
+                            <p className='text-base-m-14-1 text-gray-400'>
+                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
+                                이용하실 수 없습니다.
+                            </p>
+                        </div>
+                        <div className='px-5 mb-10'>
+                            <button
+                                className='bg-primary-600 text-white w-full h-14 rounded-[4px]'
+                                onClick={() => {
+                                    setAgreement(true);
+                                    setErrors((prev) => ({ ...prev, agreement: undefined }));
+                                    setViewModal(false);
+                                }}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+            {!isMobileView && viewModal && (
                 <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
                     <div className='bg-white w-105 rounded-[10px]'>
                         <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
@@ -243,6 +410,25 @@ export default function SubmitForm() {
                                 수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
                                 안내 드리오니 자세히 읽으신 후 동의하여 주시기 바랍니다.
                             </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 및 이용 목적</h3>
+                            <ul className='text-base-l-16-1 text-gray-600 mb-6'>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>페이지 내
+                                    매물 등록
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>상담 접수
+                                    및 처리
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>처리 내역
+                                    보관 용도
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>중복 상담
+                                    확인
+                                </li>
+                            </ul>
                             <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
                                 (필수) 성함, 전화번호, 기존 서비스 링크
@@ -272,11 +458,11 @@ export default function SubmitForm() {
                     </div>
                 </div>
             )}
-            <form className='px-43.5' onSubmit={handleSubmit} noValidate>
+            <form className='px-4 desktop:px-43.5' onSubmit={handleSubmit} noValidate>
                 {/* <Toaster position='top-center' /> */}
                 <h1 className='text-title-s-22-1 text-gray-800 mb-10'>등록정보</h1>
 
-                <div className='grid grid-cols-2 gap-5 mb-10'>
+                <div className='grid desktop:grid-cols-2 gap-5 mb-5 desktop:mb-10'>
                     <div>
                         <FormLabel htmlFor='name' required>
                             성함
@@ -341,7 +527,7 @@ export default function SubmitForm() {
                     </div>
                 </div>
 
-                <div className='mb-10'>
+                <div className='mb-5 desktop:mb-10'>
                     <FormLabel htmlFor='serviceLink' required>
                         기존 서비스 링크
                     </FormLabel>
@@ -351,7 +537,7 @@ export default function SubmitForm() {
                             alt='link'
                             width={20}
                             height={20}
-                            className={`absolute left-4 top-1/2 -translate-y-1/2
+                            className={`absolute left-3 desktop:left-4 top-1/2 -translate-y-1/2
                         duration-300 group-hover:opacity-0 group-focus-within:opacity-0 ${
                             serviceLink.trim() ? 'opacity-0' : 'opacity-100'
                         }`}
@@ -361,7 +547,7 @@ export default function SubmitForm() {
                             id='serviceLink'
                             placeholder='등록하신 기존 서비스 링크를 입력해주세요'
                             className={`${inputStyles} ${
-                                serviceLink.trim() ? 'outline-gray-600 pl-4' : 'outline-gray-400 pl-11'
+                                serviceLink.trim() ? 'outline-gray-600 ' : 'outline-gray-400 pl-9 desktop:pl-11'
                             }
                         duration-300 group-hover:pl-4 focus:pl-4`}
                             value={serviceLink}
@@ -388,9 +574,9 @@ export default function SubmitForm() {
                     </div>
                 </div>
 
-                <div className='mb-10'>
+                <div className='mb-5 desktop:mb-10'>
                     <FormLabel htmlFor='roomImage'>작업실 정보 이미지</FormLabel>
-                    <div className='flex items-center justify-between'>
+                    <div className='hidden desktop:flex items-center justify-between'>
                         <span className='-mt-1 mb-2 text-base-l-16-1 text-gray-400'>
                             등록하신 기존 서비스에 올리셨던 작업실 정보가 포함된 이미지
                         </span>
@@ -491,14 +677,14 @@ export default function SubmitForm() {
                     />
                 </div>
 
-                <div className='mb-20'>
+                <div className='mb-9 desktop:mb-20'>
                     <FormLabel htmlFor='suggestion'>기능제안</FormLabel>
                     <div className='relative'>
                         <textarea
                             id='suggestion'
                             rows={5}
                             placeholder='추가하고 싶으신 기능이 있으시다면 작성해주세요'
-                            className={`w-full rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none
+                            className={`w-full rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none whitespace-pre-line break-keep
                             outline outline-gray-400 placeholder-gray-400 focus:outline-2 focus:outline-primary-400
                             hover:shadow-level-0 ${suggestion.trim() ? 'outline-gray-600' : 'outline-gray-400'}`}
                             maxLength={200}
@@ -517,8 +703,8 @@ export default function SubmitForm() {
                     </div>
                 </div>
 
-                <div className='mb-10'>
-                    <div className='mb-10 flex items-center'>
+                <div className='mb-20'>
+                    <div className='mb-5 desktop:mb-10 flex items-center'>
                         <h2 className='text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
                         <button type='button' className='ml-1 cursor-pointer' onClick={() => setViewModal(true)}>
                             <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />

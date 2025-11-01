@@ -131,14 +131,25 @@ const FAQItem = ({ faq, isOpened, onClick }: { faq: FAQ; isOpened: boolean; onCl
                 `}
                 onClick={onClick}
             >
-                <div className='px-15 py-6.75 flex items-center justify-between'>
-                    <span className='leading-9 text-2xl font-semibold text-gray-700'>{faq.question}</span>
+                <div className='px-5 desktop:px-15 py-4 desktop:py-6.75 flex items-center justify-between'>
+                    <span className='leading-[150%] text-[1rem] desktop:text-2xl font-semibold text-gray-700'>
+                        {faq.question}
+                    </span>
                     <Image
                         src='/images/icons/up-arrow-icon.svg'
                         alt={!isOpened ? '답변 보기' : '답변 닫기'}
                         width={36}
                         height={36}
-                        className={`transition-transform duration-300 ease-in-out ${
+                        className={`hidden desktop:block transition-transform duration-300 ease-in-out ${
+                            isOpened ? 'rotate-0' : 'rotate-180'
+                        }`}
+                    />
+                    <Image
+                        src='/images/icons/up-arrow-icon.svg'
+                        alt={!isOpened ? '답변 보기' : '답변 닫기'}
+                        width={24}
+                        height={24}
+                        className={`desktop:hidden transition-transform duration-300 ease-in-out ${
                             isOpened ? 'rotate-0' : 'rotate-180'
                         }`}
                     />
@@ -152,7 +163,7 @@ const FAQItem = ({ faq, isOpened, onClick }: { faq: FAQ; isOpened: boolean; onCl
                 `}
             >
                 <div className='overflow-hidden'>
-                    <div className='px-15 py-6 leading-7.5 text-[1.25rem] font-medium text-gray-600 whitespace-pre-line break-keep'>
+                    <div className='px-4 desktop:px-15 py-4 destkop:py-6 leading-[150%] text-[14px] desktop:text-[20px] font-medium text-gray-600 whitespace-pre-line break-keep'>
                         <p>{faq.details}</p>
                         <ul className='space-y-4'>
                             {faq.steps.map((step, index) => (
@@ -186,8 +197,11 @@ export default function FAQSection() {
     };
 
     return (
-        <section id='qna-section' className='w-306 min-w-306 relative px-25 mb-50'>
-            <div className='mb-14 leading-[63px] text-[42px] font-semibold text-gray-800'>
+        <section
+            id='qna-section'
+            className='w-full min-w-90 desktop:w-306 desktop:min-w-306 relative px-4 desktop:px-25 mb-10 desktop:mb-50'
+        >
+            <div className='mb-10 desktop:mb-14 leading-[150%] text-2xl desktop:text-[42px] font-semibold text-gray-800'>
                 <p>빠른 문의사항</p>
             </div>
             <div className='space-y-4'>

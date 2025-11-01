@@ -21,36 +21,36 @@ export default function BackgroundWithPatterns() {
                 alt='hexagonal pattern'
                 width={90}
                 height={90}
-                className='absolute top-38 left-28'
+                className='absolute top-27 desktop:top-38 left-18 opacity-30 desktop:left-28 desktop:opacity-100'
             />
             <Image
                 src='/images/patterns/hexagon-2.svg'
                 alt='hexagonal pattern'
                 width={55}
                 height={55}
-                className='absolute top-12 right-70'
+                className='absolute top-12 right-12 desktop:right-70'
             />
 
-            <SquarePattern styles={'top-8 left-45 bg-primary-200'} />
-            <SquarePattern styles={'top-26 right-32 bg-primary-200'} />
-            <SquarePattern styles={'top-20 left-88 bg-primary-200'} />
-            <SquarePattern styles={'top-60 right-48 bg-primary-100'} />
-            <SquarePattern styles={'top-84 left-5 bg-primary-100'} />
-            <SquarePattern styles={'top-104 left-36 bg-primary-50'} />
+            <SquarePattern styles={'top-8 left-45 bg-primary-200 hidden desktop:block'} />
+            <SquarePattern styles={'top-26 right-32 bg-primary-200 hidden desktop:block'} />
+            <SquarePattern styles={'top-20 left-88 bg-primary-200 hidden desktop:block'} />
+            <SquarePattern styles={'top-60 right-48 bg-primary-100 hidden desktop:block'} />
+            <SquarePattern styles={'top-84 left-5 bg-primary-100 hidden desktop:block'} />
+            <SquarePattern styles={'top-104 left-36 bg-primary-50 hidden desktop:block'} />
 
             <Image
                 src='/images/patterns/iconic-1.svg'
                 alt='hexagonal pattern'
                 width={190.64}
                 height={188.93}
-                className='absolute top-113 right-5'
+                className='absolute top-56 desktop:top-113 right-5'
             />
             <Image
                 src='/images/patterns/iconic-1.svg'
                 alt='hexagonal pattern'
                 width={107.48}
                 height={106.52}
-                className='absolute top-190 left-12'
+                className='absolute top-190 left-12 hidden desktop:block'
             />
         </div>
     );

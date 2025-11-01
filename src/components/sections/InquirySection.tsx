@@ -215,12 +215,15 @@ export default function InquirySection() {
                     </div>
                 </div>
             )}
-            <section id='inquiry-section' className='w-306 min-w-306 relative px-25'>
-                <div className='mb-14 leading-[63px] text-[42px] font-semibold text-gray-800'>
+            <section
+                id='inquiry-section'
+                className='w-full min-w-90 desktop:w-306 desktop:min-w-306 relative px-4 desktop:px-25 mb-15 desktop:mb-50'
+            >
+                <div className='mb-10 desktop:mb-14 leading-[150%] text-2xl desktop:text-[42px] font-semibold text-gray-800'>
                     <p>직접 문의하기</p>
                 </div>
                 <form onSubmit={handleSubmit} noValidate>
-                    <div className='grid grid-cols-3 gap-5 mb-10'>
+                    <div className='grid desktop:grid-cols-3 gap-5 mb-5 desktop:mb-10'>
                         <div>
                             <FormLabel htmlFor='name' required>
                                 성함
@@ -267,11 +270,11 @@ export default function InquirySection() {
                             </div>
                         </div>
                     </div>
-                    <div className='mb-10'>
+                    <div className='mb-5 desktop:mb-10'>
                         <FormLabel htmlFor='inquiry' required>
                             문의사항
                         </FormLabel>
-                        <div className='relative'>
+                        <div className='relative h-[140px]'>
                             <textarea
                                 id='inquiry'
                                 rows={5}
@@ -350,34 +353,38 @@ export default function InquirySection() {
                                     개인정보 수집 및 이용에 동의합니다.
                                 </span>
                             </label>
-                            <span className='absolute w-40 mt-2 text-base-s-12-1 text-red-500'>{errors.agreement}</span>
+                            <span className='absolute w-40 mt-1 desktop:mt-2 text-base-s-12-1 text-red-500'>
+                                {errors.agreement}
+                            </span>
                         </div>
                         <button type='button' className='ml-1' onClick={() => setViewModal(true)}>
                             <Image src='/images/icons/right-arrow-icon-dark.svg' alt='' width={24} height={24} />
                         </button>
                     </div>
-                    <button
-                        type='submit'
-                        disabled={submitted}
-                        className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
-                                        ${
-                                            !submitted
-                                                ? 'bg-primary-400 cursor-pointer'
-                                                : 'bg-primary-600 cursor-not-allowed'
-                                        } hover:bg-primary-600`}
-                    >
-                        {!submitted ? (
-                            <>
-                                <span className='mr-1'>문의하기</span>
-                                <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
-                            </>
-                        ) : (
-                            <>
-                                <span className='mr-2'>문의 완료</span>
-                                <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
-                            </>
-                        )}
-                    </button>
+                    <div className='grid place-items-center desktop:place-items-start'>
+                        <button
+                            type='submit'
+                            disabled={submitted}
+                            className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
+                                            ${
+                                                !submitted
+                                                    ? 'bg-primary-400 cursor-pointer'
+                                                    : 'bg-primary-600 cursor-not-allowed'
+                                            } hover:bg-primary-600`}
+                        >
+                            {!submitted ? (
+                                <>
+                                    <span className='mr-1'>문의하기</span>
+                                    <Image src='/images/icons/right-arrow-icon.svg' alt='send' width={24} height={24} />
+                                </>
+                            ) : (
+                                <>
+                                    <span className='mr-2'>문의 완료</span>
+                                    <Image src='/images/icons/check-icon.svg' alt='check' width={12} height={9} />
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </form>
             </section>
         </>

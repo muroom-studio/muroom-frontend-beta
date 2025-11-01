@@ -55,54 +55,94 @@ const executiveFeature: ExecutiveFeature[] = [
 
 const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
     return (
-        <div
-            className='group h-83 py-14 px-15 flex flex-col outline outline-gray-200 rounded-20 shadow-level-0
-        transition-transform duration-300 hover:-translate-y-2.5 hover:outline-2 hover:outline-primary-200 hover:[box-shadow:var(--shadow-level-0),var(--shadow-surrounded)]'
-        >
-            <div className='grid place-items-center mb-4'>
-                <Image
-                    src={`/images/icons/${feature.icon}`}
-                    alt={`${feature.title}`}
-                    width={80}
-                    height={80}
-                    className='mb-4 block group-hover:hidden'
-                />
-                <Image
-                    src={`/images/icons/${feature.iconHovered}`}
-                    alt={`${feature.title}`}
-                    width={80}
-                    height={80}
-                    className='mb-4 hidden group-hover:block'
-                />
-                <span className='leading-9 text-2xl font-bold group-hover:text-primary-500'>{feature.title}</span>
+        <>
+            <div
+                className='hidden group h-83 py-14 px-15 desktop:flex flex-col outline outline-gray-200 rounded-20 shadow-level-0
+            transition-transform duration-300 hover:-translate-y-2.5 hover:outline-2 hover:outline-primary-200 hover:[box-shadow:var(--shadow-level-0),var(--shadow-surrounded)]'
+            >
+                <div className='grid place-items-center mb-4'>
+                    <Image
+                        src={`/images/icons/${feature.icon}`}
+                        alt={`${feature.title}`}
+                        width={80}
+                        height={80}
+                        className='mb-4 block group-hover:hidden'
+                    />
+                    <Image
+                        src={`/images/icons/${feature.iconHovered}`}
+                        alt={`${feature.title}`}
+                        width={80}
+                        height={80}
+                        className='mb-4 hidden group-hover:block'
+                    />
+                    <span className='leading-9 text-2xl font-bold group-hover:text-primary-500'>{feature.title}</span>
+                </div>
+                <ul className='flex flex-col items-start justify-start'>
+                    {feature.details.map((detail) => (
+                        <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-center justify-start'>
+                            <span className='inline-block w-1 h-1 bg-gray-700 rounded-full mr-2.5'></span>
+                            <p>{detail}</p>
+                        </li>
+                    ))}
+                </ul>
             </div>
-            <ul className='flex flex-col items-start justify-start'>
-                {feature.details.map((detail) => (
-                    <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-center justify-start'>
-                        <span className='inline-block w-1 h-1 bg-gray-700 rounded-full mr-2.5'></span>
-                        <p>{detail}</p>
-                    </li>
-                ))}
-            </ul>
-        </div>
+
+            <div
+                className={`desktop:hidden group h-83 py-14 px-15 flex flex-col outline outline-gray-200 rounded-20 shadow-level-0
+                transform transition-all duration-500 ease-out`}
+            >
+                <div className='grid place-items-center mb-4'>
+                    <Image
+                        src={`/images/icons/${feature.icon}`}
+                        alt={`${feature.title}`}
+                        width={80}
+                        height={80}
+                        className='mb-4 block group-hover:hidden'
+                    />
+                    <Image
+                        src={`/images/icons/${feature.iconHovered}`}
+                        alt={`${feature.title}`}
+                        width={80}
+                        height={80}
+                        className='mb-4 hidden group-hover:block'
+                    />
+                    <span className='leading-9 text-2xl font-bold group-hover:text-primary-500'>{feature.title}</span>
+                </div>
+                <ul className='flex flex-col items-start justify-start'>
+                    {feature.details.map((detail) => (
+                        <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-center justify-start'>
+                            <span className='inline-block w-1 h-1 bg-gray-700 rounded-full mr-2.5'></span>
+                            <p>{detail}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </>
     );
 };
 
 export default function ExecutiveFeaturesSection() {
     return (
-        <section id='custom-section' className='w-306 min-w-306 relative px-25 mb-50'>
-            <div className='mb-14 leading-14 text-special-m-40-size font-bold text-gray-800'>
+        <section
+            id='custom-section'
+            className='w-full min-w-90 desktop:w-306 desktop:min-w-306 relative px-4 desktop:px-25 mb-25 desktop:mb-50'
+        >
+            <div className='mb-10 desktop:mb-14 leading-[140%] text-2xl desktop:text-special-m-40-size font-bold text-gray-800'>
                 <p>
-                    사장님을 위한 <span className='text-primary-500'>맞춤 기능</span>도 준비하고 있어요!
+                    사장님을 위한 <br className='desktop:hidden' />
+                    <span className='text-primary-500'>맞춤 기능</span>도 준비하고 있어요!
                 </p>
             </div>
-            <div className='grid grid-cols-3 gap-5 mb-10'>
+            <div className='relative grid desktop:grid-cols-3 gap-3 desktop:gap-5 mb-4 desktop:mb-10'>
                 {executiveFeature.map((feature) => (
                     <ExecutiveFeatureCard key={feature.id} feature={feature} />
                 ))}
             </div>
-            <div className='w-full flex justify-end text-title-exs-18 text-gray-600'>
-                <span>* 위 기능 오픈 베타 런칭 이후 추가될 예정이며, 변경 될 수 있습니다.</span>
+
+            <div className='w-full flex justify-end text-[14px] desktop:text-title-exs-18 text-gray-600'>
+                <span className='tracking-tighter desktop:tracking-normal'>
+                    * 위 기능 오픈 베타 런칭 이후 추가될 예정이며, 변경 될 수 있습니다.
+                </span>
             </div>
         </section>
     );

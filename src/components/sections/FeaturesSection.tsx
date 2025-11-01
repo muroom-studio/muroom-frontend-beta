@@ -206,10 +206,13 @@ export default function FeaturesSection() {
 
     return (
         <>
-            <section id='feature-section-title' className='w-306 min-w-306 relative px-25'>
-                <div className='mb-14 leading-14 text-special-m-40-size font-bold text-gray-800'>
+            <section
+                id='feature-section-title'
+                className='w-full min-w-90 desktop:w-306 desktop:min-w-306 relative px-4 desktop:px-25'
+            >
+                <div className='mb-4 desktop:mb-14 leading-[140%] text-2xl desktop:text-special-m-40-size font-bold text-gray-800'>
                     <p>
-                        <span className='text-primary-600'>지도 + 리스트</span> UI로 사장님의 연습실을
+                        <span className='text-primary-600'>지도+리스트</span> UI로 사장님의 연습실을
                     </p>
                     <p>가장 빠르고 정확하게 연결합니다.</p>
                 </div>
@@ -219,7 +222,7 @@ export default function FeaturesSection() {
                     <FeatureCard key={feature.id} feature={feature} />
                 ))}
             </div> */}
-            <div className='w-full overflow-hidden mb-50'>
+            <div className='w-full overflow-hidden mb-25 desktop:mb-50'>
                 <div ref={trackRef} className='flex overflow-x-auto'>
                     {[...features, ...features].map((feature, index) => (
                         <div key={`${feature.id}-${index}`} className='shrink-0 w-[328px] mr-5'>

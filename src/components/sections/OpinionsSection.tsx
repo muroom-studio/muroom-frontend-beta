@@ -32,24 +32,25 @@ export default function OpinionsSection() {
     ];
 
     return (
-        <section id='opinions-section' className='col-span-full'>
-            <div className='leading-14 text-special-m-40-size font-bold mb-14'>
+        <section id='opinions-section' className='desktop:w-full col-span-full mb-25 desktop:mb-50'>
+            <div className='leading-[140%] text-2xl desktop:text-special-m-40-s font-bold'>
                 <p>
                     고객은 <span className='text-gray-500'>커뮤니티 플랫폼</span>에 대해
                 </p>
                 <p>어떻게 생각하고 있을까요?</p>
             </div>
-            <div className='grid grid-cols-6 gap-5 mb-50'>
+            <div className='h-full flex gap-3 overflow-x-auto desktop:grid desktop:grid-cols-6 desktop:gap-4 px-1'>
                 {opinionsAboutCommunityPlatform.map((opinion, index) => {
                     return (
                         <div
                             key={index}
-                            className='relative h-[407px] col-span-2 outline outline-gray-100 rounded-[10px] shadow-level-1 p-10'
+                            className='relative w-[254px] h-[361px] desktop:w-[328px] desktop:h-[407px] outline outline-gray-100 rounded-[10px] shadow-level-1 mt-10 desktop:mt-14 px-6 desktop:px-10 py-10
+                            shrink-0 desktop:col-span-2'
                         >
-                            <div className='leading-10.5 text-3xl font-bold text-gray-700 mb-6'>
+                            <div className='leading-[140%] text-[22px] desktop:text-3xl font-bold text-gray-700 mb-6'>
                                 <p className='whitespace-pre-line'>{opinion.title}</p>
                             </div>
-                            <div className='leading-6 text-[1rem] font-medium text-gray-500'>
+                            <div className='leading-[150%] text-[14px] desktop:text-[1rem] font-medium text-gray-500'>
                                 <p>{opinion.description}</p>
                             </div>
                             <div className='absolute bottom-10 py-2.5 px-3 flex items-center rounded-[10px] bg-primary-50'>

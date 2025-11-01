@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer className='w-full px-20 pt-5 pb-12'>
+        <footer className='w-full px-4 desktop:px-20 pt-5 pb-15'>
             <h2 className='text-base-m-14-2 text-gray-500 mb-3'>(주) 뮤룸</h2>
 
             <table className='text-base-s-12-1 text-gray-500 mb-5'>
