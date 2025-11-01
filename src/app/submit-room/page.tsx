@@ -19,7 +19,7 @@ import Footer from '@/components/Footer';
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
 export default function Intro() {
     return (
-        <div className='relative w-full min-w-306 h-full bg-white flex flex-col items-center'>
+        <div className='relative w-full min-w-120 desktop:min-w-306 h-full bg-white flex flex-col items-center'>
             <BackgroundWithTitle />
 
             <Header />

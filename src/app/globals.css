@@ -23,9 +23,6 @@
     --shadow-level-0: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
     --shadow-surrounded: 0 0 20px 0 rgba(142, 81, 255, 0.1);
 
-    /* 배경 이미지 토큰 (경로 수정됨) */
-    --bg-honeycomb: url('/images/patterns/hexagon-1.svg');
-
     @keyframes infinite-scroll {
         from {
             /* '0%'를 'from'으로 써도 됩니다 */
@@ -68,7 +65,7 @@
         box-shadow: var(--shadow-level-0);
     }
 
-    .shadow-surrounded {
+    .shadow-surround {
         box-shadow: var(--shadow-surrounded);
     }
 

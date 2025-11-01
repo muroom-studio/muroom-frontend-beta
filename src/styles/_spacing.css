@@ -17,6 +17,5 @@
     --spacing-macro-64: 64px;
     --spacing-macro-80: 80px;
 
-    --breakpoint-desktop: 1024px;
-    --breakpoint-mobile: 480px;
+    --breakpoint-desktop: 480px;
 }
