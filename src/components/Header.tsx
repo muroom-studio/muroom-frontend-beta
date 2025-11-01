@@ -85,7 +85,7 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed z-50 top-10 
+            className={`fixed z-50 top-5 desktop:top-10 
                         transition-transform duration-500 ease-in-out
                         ${isVisible ? 'translate-y-0' : '-translate-y-30 desktop:-translate-y-35'}
                         w-90 min-w-90 px-5
