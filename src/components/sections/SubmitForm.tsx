@@ -371,7 +371,7 @@ export default function SubmitForm() {
                             </p>
                             <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월(단, 요청시 삭제)
+                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
                             </p>
                             <hr className='text-gray-300 mb-5' />
                             <p className='text-base-m-14-1 text-gray-400'>
@@ -435,7 +435,7 @@ export default function SubmitForm() {
                             </p>
                             <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월(단, 요청시 삭제)
+                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
                             </p>
                             <hr className='text-gray-300 mb-6' />
                             <p className='text-base-m-14-1 text-gray-400'>

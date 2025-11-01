@@ -1,6 +1,6 @@
 'use client';
 
-import { KeyboardEvent, useRef, useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import ErrorMessage from '../ErrorMessage';
 import FormLabel from '../FormLabel';
 import { useToast } from '../ToastProvider';
@@ -22,6 +22,7 @@ export default function InquirySection() {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [inquiry, setInquiry] = useState('');
+    const charCount = inquiry.length;
     const [agreement, setAgreement] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
@@ -33,7 +34,72 @@ export default function InquirySection() {
     const inquiryRef = useRef<HTMLInputElement>(null);
     const agreementRef = useRef<HTMLDivElement>(null);
 
-    const charCount = inquiry.length;
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragY, setDragY] = useState(0); // 현재 드래그된 Y축 거리
+    const dragStartY = useRef<number>(0);
+    const DRAG_THRESHOLD = 100;
+
+    /** 드래그 시작 (손가락/마우스 누름) */
+    const handleDragStart = (e: React.PointerEvent<HTMLElement>) => {
+        // e.preventDefault(); // 버튼의 기본 클릭 이벤트를 막을 수 있으므로 주석 처리
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        dragStartY.current = e.clientY;
+        setIsDragging(true); // "드래그 중" 상태로 변경
+    };
+    /** 드래그 중 (손가락/마우스 이동) */
+    const handleDragMove = (e: React.PointerEvent<HTMLElement>) => {
+        if (!isDragging) return; // 드래그 중이 아니면 무시
+
+        e.preventDefault(); // 페이지 스크롤 방지
+        const currentY = e.clientY;
+        const deltaY = currentY - dragStartY.current;
+
+        // 1. 아래로만 드래그되도록 (위로 올리는 건 무시)
+        // 2. 모달이 따라오는 느낌을 주기 위해 dragY 상태 업데이트
+        setDragY(Math.max(0, deltaY));
+    };
+    /** 드래그 종료 (손가락/마우스 뗌) */
+    const handleDragEnd = (e: React.PointerEvent<HTMLElement>) => {
+        if (!isDragging) return;
+
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+        setIsDragging(false); // "드래그 종료" 상태
+
+        // 1. 닫기 기준(THRESHOLD)을 넘었는지 확인
+        if (dragY > DRAG_THRESHOLD) {
+            setViewModal(false); // 모달 닫기
+        }
+
+        // 2. 기준을 넘지 않았으면 원위치로 스냅백
+        //    (기준을 넘었어도 닫히기 전 상태를 리셋)
+        setDragY(0);
+        dragStartY.current = 0;
+    };
+
+    // 480px 미만인지 여부를 저장합니다. (기본값: false)
+    const [isMobileView, setIsMobileView] = useState(false);
+    useEffect(() => {
+        const MOBILE_WIDTH_THRESHOLD = 480;
+
+        const checkIsMobile = () => {
+            return window.innerWidth < MOBILE_WIDTH_THRESHOLD;
+        };
+
+        // 1. 컴포넌트가 클라이언트에 마운트될 때 초기 상태 설정
+        setIsMobileView(checkIsMobile());
+
+        // 2. 창 크기가 변경될 때마다 상태 업데이트
+        const handleResize = () => {
+            setIsMobileView(checkIsMobile());
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // 3. 컴포넌트 언마운트 시 이벤트 리스너 제거 (메모리 누수 방지)
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     /** 이름 유효성 검사 (2~30자, 한글/영문/공백) */
     const validateName = (name: string) => {
@@ -170,7 +236,101 @@ export default function InquirySection() {
 
     return (
         <>
-            {viewModal && (
+            {isMobileView && (
+                <>
+                    {' '}
+                    <div
+                        className={`fixed z-998 left-0 top-0 w-full h-full grid place-items-center
+                                transition-all duration-500
+                                ${
+                                    viewModal
+                                        ? 'opacity-100 visibility-visible bg-black/50'
+                                        : 'opacity-0 visibility-hidden bg-transparent pointer-events-none'
+                                }`}
+                        // [수정]
+                        // 1. (보일 때) opacity-100, visibility-visible, bg-black/50
+                        // 2. (숨길 때) opacity-0, visibility-hidden, bg-transparent
+                        // 3. (숨길 때) pointer-events-none: 숨겨져 있을 때 클릭 이벤트를 막음
+                    ></div>
+                    {/* <div
+                                className={`fixed z-999 left-0 bottom-0 bg-white w-full rounded-[10px]
+                                    transition-all duration-300
+                                ${viewModal ? 'translate-y-0' : 'translate-y-150'}`}
+                            > */}
+                    <div
+                        className={`fixed z-999 left-0 bottom-0 bg-white w-full rounded-t-[10px]
+                        ${isDragging ? '' : 'transition-transform duration-300'}
+                    `}
+                        // [수정]
+                        // 1. 'translate-y-0', 'translate-y-150' 제거
+                        // 2. 드래그 중(isDragging)일 때는 transition을 제거해야 부드럽게 따라옴
+
+                        style={{
+                            // 3. style에서 transform을 직접 제어
+                            transform: viewModal
+                                ? `translateY(${dragY}px)` // 드래그 중인 Y값 적용
+                                : 'translateY(100%)', // 닫혔을 때 (150% 대신 100%로 수정)
+                        }}
+                        onClick={(e) => e.stopPropagation()} // 배경 클릭 시 닫힘 방지
+                    >
+                        <div className='w-full h-9 py-2 grid place-items-center'>
+                            <button
+                                onPointerDown={handleDragStart}
+                                onPointerMove={handleDragMove}
+                                onPointerUp={handleDragEnd}
+                                onPointerCancel={handleDragEnd} // 드래그가 비정상적으로 취소될 때 (예: 알림)
+                                className='cursor-grab active:cursor-grabbing touch-none w-full h-full grid place-items-center'
+                            >
+                                <Image src='/images/icons/drag-handle-icon.svg' alt='close' width={32} height={4} />
+                            </button>
+                        </div>
+                        <div className='px-5 pt-2 pb-5'>
+                            <h2 className='text-title-s-22-2 text-gray-800 mb-6'>개인정보 수집 및 이용 동의</h2>
+                            <p className='mb-8'>
+                                수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
+                                안내해 드리오니 자세히 읽으신 후 동의해 주시기 바랍니다.
+                            </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 및 이용 목적</h3>
+                            <ul className='text-base-l-16-1 text-gray-600 mb-6'>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>상담 접수
+                                    및 처리
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>처리 내역
+                                    보관 용도
+                                </li>
+                            </ul>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
+                                (필수) 성함, 전화번호, 기존 서비스 링크
+                            </p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
+                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
+                            </p>
+                            <hr className='text-gray-300 mb-5' />
+                            <p className='text-base-m-14-1 text-gray-400'>
+                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
+                                이용하실 수 없습니다.
+                            </p>
+                        </div>
+                        <div className='px-5 mb-10'>
+                            <button
+                                className='bg-primary-600 text-white w-full h-14 rounded-[4px]'
+                                onClick={() => {
+                                    setAgreement(true);
+                                    setErrors((prev) => ({ ...prev, agreement: undefined }));
+                                    setViewModal(false);
+                                }}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+            {!isMobileView && viewModal && (
                 <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
                     <div className='bg-white w-105 rounded-[10px]'>
                         <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
@@ -192,7 +352,7 @@ export default function InquirySection() {
                             </p>
                             <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월(단, 요청시 삭제)
+                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
                             </p>
                             <hr className='text-gray-300 mb-6' />
                             <p className='text-base-m-14-1 text-gray-400'>
@@ -239,8 +399,19 @@ export default function InquirySection() {
                                     }`}
                                     value={name}
                                     onChange={(e) => {
-                                        setName(e.target.value);
-                                        handleChange('name');
+                                        const nameInput = e.target.value;
+                                        setName(nameInput);
+
+                                        if (!nameInput.trim()) {
+                                            setErrors((prev) => ({ ...prev, name: '성함을 입력해주세요.' }));
+                                        } else if (!validateName(nameInput.trim())) {
+                                            setErrors((prev) => ({
+                                                ...prev,
+                                                name: '올바른 성함(2~30자, 한글/영문)을 입력해주세요.',
+                                            }));
+                                        } else {
+                                            setErrors((prev) => ({ ...prev, name: undefined }));
+                                        }
                                     }}
                                 />
                                 <ErrorMessage message={errors.name} />
@@ -263,7 +434,17 @@ export default function InquirySection() {
                                     onChange={(e) => {
                                         const formattedPhone = formatPhoneNumber(e.target.value);
                                         setPhone(formattedPhone);
-                                        handleChange('phone');
+
+                                        if (!formattedPhone.trim()) {
+                                            setErrors((prev) => ({ ...prev, phone: '전화번호를 입력해주세요.' }));
+                                        } else if (!validatePhone(formattedPhone.trim())) {
+                                            setErrors((prev) => ({
+                                                ...prev,
+                                                phone: '올바른 전화번호 형식(010-1234-5678)을 입력해주세요.',
+                                            }));
+                                        } else {
+                                            setErrors((prev) => ({ ...prev, phone: undefined }));
+                                        }
                                     }}
                                 />
                                 <ErrorMessage message={errors.phone} />
@@ -287,8 +468,13 @@ export default function InquirySection() {
                                 maxLength={200}
                                 value={inquiry}
                                 onChange={(e) => {
-                                    setInquiry(e.target.value);
-                                    handleChange('inquiry');
+                                    const inquiryInput = e.target.value;
+                                    setInquiry(inquiryInput);
+                                    if (!inquiryInput.trim()) {
+                                        setErrors((prev) => ({ ...prev, inquiry: '문의사항을 입력해주세요.' }));
+                                    } else {
+                                        setErrors((prev) => ({ ...prev, inquiry: undefined }));
+                                    }
                                     if (e.target.value.length < 200) {
                                         setLimitToastShown(false);
                                     }
