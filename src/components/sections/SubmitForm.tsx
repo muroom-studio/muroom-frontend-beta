@@ -496,7 +496,7 @@ export default function SubmitForm() {
                                     } else if (!validateName(nameInput.trim())) {
                                         setErrors((prev) => ({
                                             ...prev,
-                                            name: '올바른 성함(2~30자, 한글/영문)을 입력해주세요.',
+                                            name: '2~30자, 한글/영문으로 입력해주세요.',
                                         }));
                                     } else {
                                         setErrors((prev) => ({ ...prev, name: undefined }));
@@ -527,7 +527,7 @@ export default function SubmitForm() {
                                     } else if (!validatePhone(formattedPhone.trim())) {
                                         setErrors((prev) => ({
                                             ...prev,
-                                            phone: '올바른 전화번호 형식(010-1234-5678)을 입력해주세요.',
+                                            phone: '[010-1234-5678] 형식으로 입력해주세요.',
                                         }));
                                     } else {
                                         setErrors((prev) => ({ ...prev, phone: undefined }));
