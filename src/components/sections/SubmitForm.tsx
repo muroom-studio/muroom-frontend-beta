@@ -7,7 +7,7 @@ import ErrorMessage from '../ErrorMessage';
 import dynamic from 'next/dynamic';
 import FormLabel from '../FormLabel';
 import { FileUploadRequest } from '@/types/api';
-import { getPresignedUrls, submitRegistration, uploadFileToS3 } from '@/lib/api';
+import { getPresignedUrls, submitRegistration } from '@/lib/api';
 
 interface FilePreview {
     url: string;
@@ -349,7 +349,7 @@ export default function SubmitForm() {
             setFilePreviews([]);
             setSubmitted(false);
             setErrors({});
-        } catch (error) {
+        } catch (_error) {
             toast('등록에 실패했습니다. 다시 시도해주세요.');
             setSubmitted(false);
         }
