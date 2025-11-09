@@ -94,3 +94,11 @@
     position: relative;
     top: -18px;
 }
+
+.semi-massive-counter {
+    font-size: 120px;
+    font-weight: 600;
+    line-height: 140%;
+    position: relative;
+    top: -7px;
+}
