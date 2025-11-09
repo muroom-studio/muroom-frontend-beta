@@ -6,6 +6,8 @@ import { useToast } from '../ToastProvider';
 import ErrorMessage from '../ErrorMessage';
 import dynamic from 'next/dynamic';
 import FormLabel from '../FormLabel';
+import { FileUploadRequest } from '@/types/api';
+import { getPresignedUrls, submitRegistration, uploadFileToS3 } from '@/lib/api';
 
 interface FilePreview {
     url: string;
@@ -212,7 +214,7 @@ export default function SubmitForm() {
         return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`;
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // 폼의 기본 동작(페이지 새로고침) 방지
         e.preventDefault();
         const newErrors: FormErrors = {};
@@ -270,18 +272,73 @@ export default function SubmitForm() {
             return;
         }
 
-        toast('등록이 완료되었습니다.');
         setSubmitted(true);
+        toast('등록을 진행하고 있습니다. 잠시만 기다려주세요.');
 
-        const formData = {
-            name,
-            phone,
-            serviceLink,
-            suggestion,
-            agreement,
-            roomImages: roomImages.map((file) => file.name),
-        };
-        console.log('제출할 데이터:', formData);
+        try {
+            let uploadedFileKeys: string[] = [];
+
+            // 1. 이미지 파일이 있는 경우, Presigned URL 요청 및 S3 업로드
+            if (roomImages.length > 0) {
+                toast('이미지 업로드 준비 중...');
+                const fileRequests: FileUploadRequest[] = roomImages.map((file) => ({
+                    type: 'BETA_PROPERTY',
+                    fileName: file.name,
+                    contentType: file.type,
+                }));
+
+                const presignedUrlsData = await getPresignedUrls(fileRequests);
+
+                // S3에 파일 업로드 (병렬 처리)
+                const uploadPromises = presignedUrlsData.map(async (presignedData, index) => {
+                    const file = roomImages[index];
+                    if (!file) {
+                        return null;
+                    }
+                    await uploadFileToS3(presignedData.url, file);
+                    return presignedData.fileKey;
+                });
+
+                const results = await Promise.allSettled(uploadPromises);
+
+                uploadedFileKeys = results
+                    .filter((result) => result.status === 'fulfilled' && result.value !== null)
+                    .map((result) => (result as PromiseFulfilledResult<string>).value);
+
+                // 모든 파일이 성공적으로 업로드되지 않았다면 에러 처리
+                if (uploadedFileKeys.length !== roomImages.length) {
+                    throw new Error('일부 이미지 파일 업로드에 실패했습니다.');
+                }
+            }
+
+            // 2. 최종 폼 데이터 제출
+            const submissionData = {
+                name,
+                phoneNumber: phone, // formatPhoneNumber로 이미 처리된 상태
+                thirdPartyUrl: serviceLink,
+                agreedToPrivacy: agreement,
+                featureSuggestions: suggestion,
+                introductoryImageFileKeys: uploadedFileKeys, // S3에 업로드된 파일들의 키
+            };
+
+            await submitRegistration(submissionData);
+
+            toast('등록이 완료되었습니다.');
+            // setSubmitted(true); // 이미 위에서 설정했으므로 중복 제거
+            // 성공 시 폼 초기화 등의 추가 작업 가능
+            setName('');
+            setPhone('');
+            setServiceLink('');
+            setSuggestion('');
+            setAgreement(false);
+            setRoomImages([]);
+            setFilePreviews([]);
+            setSubmitted(false);
+            setErrors({});
+        } catch (error) {
+            toast('등록에 실패했습니다. 다시 시도해주세요.');
+            setSubmitted(false);
+        }
     };
 
     const handleSuggestionKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {

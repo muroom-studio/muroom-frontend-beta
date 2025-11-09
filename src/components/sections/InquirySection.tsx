@@ -5,6 +5,7 @@ import ErrorMessage from '../ErrorMessage';
 import FormLabel from '../FormLabel';
 import { useToast } from '../ToastProvider';
 import Image from 'next/image';
+import { submitInquiry } from '@/lib/api';
 
 const inputStyles = `w-full rounded-[10px] px-4 py-4 text-base-l-16-1 text-gray-700 placeholder-gray-400
     outline focus:outline-2 focus:outline-primary-400
@@ -152,7 +153,7 @@ export default function InquirySection() {
         return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7, 11)}`;
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // 폼의 기본 동작(페이지 새로고침) 방지
         e.preventDefault();
         const newErrors: FormErrors = {};
@@ -213,13 +214,27 @@ export default function InquirySection() {
         toast('등록이 완료되었습니다.');
         setSubmitted(true);
 
-        const formData = {
-            name,
-            phone,
-            inquiry,
-            agreement,
-        };
-        console.log('제출할 데이터:', formData);
+        try {
+            const inquiryData = {
+                name,
+                phoneNumber: phone,
+                content: inquiry,
+                agreedToPrivacy: agreement,
+            };
+
+            await submitInquiry(inquiryData);
+
+            toast('문의 등록이 완료되었습니다.');
+            setName('');
+            setPhone('');
+            setInquiry('');
+            setAgreement(false);
+            setSubmitted(false);
+            setErrors({});
+        } catch (error) {
+            toast('문의등록에 실패했습니다. 다시 시도해주세요.');
+            setSubmitted(false);
+        }
     };
 
     const handleChange = (field: keyof FormErrors) => {
