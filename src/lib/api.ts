@@ -9,6 +9,7 @@ import {
     ApiErrorResponse,
     SubmitInquiryRequest,
     SubmitInquiryResponse,
+    GetRegistrationCountResponse,
 } from '../types/api';
 
 /**
@@ -29,6 +30,17 @@ async function apiFetcher<T>(url: string, options?: RequestInit): Promise<T> {
     }
 
     return response.json();
+}
+
+export async function getRemainingCount() {
+    const TOTAL_SLOTS = 54;
+
+    const response = await apiFetcher<GetRegistrationCountResponse>('/api/beta/registrations/counts', {
+        method: 'GET',
+        next: { revalidate: 0 },
+    });
+
+    return TOTAL_SLOTS - response.data.totalRegistrations;
 }
 
 /**

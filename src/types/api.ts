@@ -26,6 +26,14 @@ export interface GetPresignedUrlResponse {
     };
 }
 
+export interface GetRegistrationCountResponse {
+    status: number;
+    message: string;
+    data: {
+        totalRegistrations: number;
+    };
+}
+
 /**
  * 최종 폼 제출 시 이미지 파일 키 목록
  */

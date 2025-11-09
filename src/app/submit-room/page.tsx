@@ -15,6 +15,7 @@ import FAQSection from '@/components/sections/FAQSection';
 import InquirySection from '@/components/sections/InquirySection';
 import TopAnchorButton from '@/components/TopAnchorButton';
 import Footer from '@/components/Footer';
+import EventSection from '@/components/sections/EventSection';
 
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
 export default function Intro() {
@@ -46,6 +47,8 @@ export default function Intro() {
             <EfficiencySection />
 
             <ExecutiveFeaturesSection />
+
+            <EventSection />
 
             <SubmitSection />
 
