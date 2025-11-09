@@ -295,8 +295,22 @@ export default function SubmitForm() {
                     if (!file) {
                         return null;
                     }
-                    await uploadFileToS3(presignedData.url, file);
+
+                    const response = await fetch(presignedData.url, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': file.type,
+                        },
+                        body: file,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`파일 업로드 실패: ${file.name} - ${response.statusText}`);
+                    }
+
                     return presignedData.fileKey;
+                    // await uploadFileToS3(presignedData.url, file);
+                    // return presignedData.fileKey;
                 });
 
                 const results = await Promise.allSettled(uploadPromises);

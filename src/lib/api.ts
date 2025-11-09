@@ -51,20 +51,20 @@ export async function getPresignedUrls(
  * @param presignedUrl S3에 파일을 PUT할 presigned URL
  * @param file 업로드할 File 객체
  */
-export async function uploadFileToS3(presignedUrl: string, file: File): Promise<void> {
-    // S3에 직접 업로드하는 것이므로 API_BASE_URL을 사용하지 않고 전체 URL 사용
-    const response = await fetch(presignedUrl, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': file.type, // 파일의 실제 MIME 타입
-        },
-        body: file,
-    });
+// export async function uploadFileToS3(presignedUrl: string, file: File): Promise<void> {
+//     // S3에 직접 업로드하는 것이므로 API_BASE_URL을 사용하지 않고 전체 URL 사용
+//     const response = await fetch(presignedUrl, {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': file.type, // 파일의 실제 MIME 타입
+//         },
+//         body: file,
+//     });
 
-    if (!response.ok) {
-        throw new Error(`S3 파일 업로드 실패: ${response.statusText}`);
-    }
-}
+//     if (!response.ok) {
+//         throw new Error(`S3 파일 업로드 실패: ${response.statusText}`);
+//     }
+// }
 
 /**
  * 최종 폼 데이터를 제출하는 함수

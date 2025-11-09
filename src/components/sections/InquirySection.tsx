@@ -211,7 +211,7 @@ export default function InquirySection() {
             return;
         }
 
-        toast('등록이 완료되었습니다.');
+        toast('문의 등록을 진행하고 있습니다. 잠시만 기다려주세요.');
         setSubmitted(true);
 
         try {
