@@ -73,3 +73,14 @@
         animation: infinite-scroll 40s linear infinite;
     }
 }
+
+/* Chrome, Safari, Edge 등 WebKit 브라우저용 */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Firefox 브라우저용 */
+.no-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE, Edge (구) */
+}

@@ -407,7 +407,7 @@ export default function InquirySection() {
                 className='w-full min-w-90 desktop:w-306 desktop:min-w-306 relative px-4 desktop:px-25 mb-15 desktop:mb-50'
             >
                 <div className='mb-10 desktop:mb-14 leading-[150%] text-2xl desktop:text-[42px] font-semibold text-gray-800'>
-                    <p>직접 문의하기</p>
+                    <p>1:1 문의하기</p>
                 </div>
                 <form onSubmit={handleSubmit} noValidate>
                     <div className='grid desktop:grid-cols-3 gap-5 mb-5 desktop:mb-10'>

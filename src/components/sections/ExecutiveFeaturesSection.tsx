@@ -79,9 +79,11 @@ const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
                 </div>
                 <ul className='flex flex-col items-start justify-start'>
                     {feature.details.map((detail) => (
-                        <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-center justify-start'>
-                            <span className='inline-block w-1 h-1 bg-gray-700 rounded-full mr-2.5'></span>
-                            <p>{detail}</p>
+                        <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-start justify-start'>
+                            <div className='h-6 grid place-items-center mr-2.5'>
+                                <span className='inline-block w-1 h-1 bg-gray-700 rounded-full'></span>
+                            </div>
+                            <p className='whitespace-pre-line break-keep'>{detail}</p>
                         </li>
                     ))}
                 </ul>
@@ -110,9 +112,14 @@ const ExecutiveFeatureCard = ({ feature }: { feature: ExecutiveFeature }) => {
                 </div>
                 <ul className='flex flex-col items-start justify-start'>
                     {feature.details.map((detail) => (
-                        <li key={detail} className='w-full pl-2.5 text-gray-700 flex items-center justify-start'>
-                            <span className='inline-block w-1 h-1 bg-gray-700 rounded-full mr-2.5'></span>
-                            <p>{detail}</p>
+                        <li
+                            key={detail}
+                            className='w-full pl-2.5 text-gray-700 flex items-start justify-start leading-[150%] text-[1rem] font-medium'
+                        >
+                            <div className='h-6 grid place-items-center mr-2.5'>
+                                <span className='inline-block w-1 h-1 bg-gray-700 rounded-full'></span>
+                            </div>
+                            <p className='whitespace-pre-line break-keep'>{detail}</p>
                         </li>
                     ))}
                 </ul>

@@ -7,9 +7,9 @@ export default function EfficiencySection() {
             className='w-full min-w-90 desktop:w-306 desktop:min-w-306 relative px-4 desktop:px-25 mb-25 desktop:mb-50'
         >
             <div className='mb-10 desktop:mb-14 leading-[140%] text-2xl desktop:text-special-m-40-size font-bold text-gray-800'>
-                <p>커뮤니티보다 탐색 속도와 정확도가</p>
+                <p>기존 플랫폼 대비 탐색 속도와 정확도</p>
                 <p>
-                    <span className='text-primary-600'>25% 이상</span> 확인됐습니다.
+                    <span className='text-primary-600'>25% 이상</span> 개선됐습니다.
                 </p>
             </div>
             <div className='leading-5 text-[12px] desktop:text-[1rem] font-normal text-gray-500 mb-4 desktop:mb-10'>

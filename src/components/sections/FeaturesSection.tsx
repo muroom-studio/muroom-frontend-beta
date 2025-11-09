@@ -84,7 +84,7 @@ const features: Feature[] = [
 const FeatureCard = ({ feature }: { feature: Feature }) => {
     return (
         <div className='relative h-107 py-5 px-8.5 bg-white border border-primary-100 rounded-[10px] shadow-level-0 overflow-hidden'>
-            <div className='flex'>
+            <div className='flex items-center mb-2'>
                 <Image
                     src={`/images/icons/${feature.icon}`}
                     alt={`${feature.title}`}
@@ -92,7 +92,7 @@ const FeatureCard = ({ feature }: { feature: Feature }) => {
                     height={24}
                     className='w-6 h-6'
                 />
-                <span className='ml-2 mb-2 leading-11 text-2xl font-semibold text-gray-700'>{feature.title}</span>
+                <span className='ml-2 leading-11 text-2xl font-semibold text-gray-700'>{feature.title}</span>
             </div>
             <p className='whitespace-pre-line leading-6 text-[1rem] font-medium text-gray-500'>{feature.description}</p>
             <Image
@@ -119,6 +119,9 @@ export default function FeaturesSection() {
     const isInteractingRef = useRef(false);
     // requestAnimationFrame의 ID를 저장
     const animationFrameRef = useRef<number | null>(null);
+
+    // 가상 스크롤 위치를 저장
+    const virtualScrollRef = useRef<number>(0);
 
     // 1. 스크롤 너비 계산 (기존과 동일)
     useEffect(() => {
@@ -148,12 +151,22 @@ export default function FeaturesSection() {
         if (!trackRef.current || scrollWidth === 0) return;
 
         const el = trackRef.current;
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        el.scrollLeft += isSafari ? 3 : 1;
+        const scrollSpeed = 0.5; // 원하는 속도 (e.g., 0.5)
 
+        // 1. el.scrollLeft 대신 virtualScrollRef를 증가시킴
+        virtualScrollRef.current += scrollSpeed;
+
+        // 2. 증가된 virtual 값을 실제 scrollLeft에 할당
+        el.scrollLeft = virtualScrollRef.current;
+
+        // 3. 루프 확인 (el.scrollLeft 기준)
         if (el.scrollLeft >= scrollWidth) {
-            el.scrollLeft = el.scrollLeft - scrollWidth;
+            // 실제 스크롤이 루프 지점에 도달했을 때
+            const offset = virtualScrollRef.current - scrollWidth;
+            virtualScrollRef.current = offset; // 가상 스크롤도 리셋
+            el.scrollLeft = offset; // 실제 스크롤도 리셋
         }
+
         animationFrameRef.current = requestAnimationFrame(autoScroll);
     }, [scrollWidth]); // scrollWidth가 변경되면 이 함수도 최신화됨
 
@@ -164,7 +177,13 @@ export default function FeaturesSection() {
 
     const handleInteractionEnd = useCallback(() => {
         isInteractingRef.current = false;
-        // 직접 호출 대신 requestAnimationFrame을 통해 스크롤 재시작
+
+        // 1. 상호작용이 끝난 시점의 *실제* 스크롤 위치로 *가상* 스크롤 위치를 동기화
+        if (trackRef.current) {
+            virtualScrollRef.current = trackRef.current.scrollLeft;
+        }
+
+        // 2. 스크롤 재시작
         if (!animationFrameRef.current) {
             animationFrameRef.current = requestAnimationFrame(autoScroll);
         }
@@ -172,12 +191,15 @@ export default function FeaturesSection() {
 
     const handleManualScroll = useCallback(() => {
         if (!trackRef.current || scrollWidth === 0) return;
-        // 사용자가 직접 스크롤할 때(isInteractingRef.current === true)만 루프 처리
+
         if (isInteractingRef.current) {
+            // 사용자가 수동 스크롤 중일 때
             const el = trackRef.current;
             if (el.scrollLeft >= scrollWidth) {
                 el.scrollLeft = el.scrollLeft - scrollWidth;
             }
+            // 수동 스크롤 중에도 가상 스크롤 위치를 계속 동기화
+            virtualScrollRef.current = el.scrollLeft;
         }
     }, [scrollWidth]);
 
@@ -189,6 +211,9 @@ export default function FeaturesSection() {
 
         // Safari 강제 초기화
         isInteractingRef.current = false;
+
+        // 가상 스크롤 위치를 현재 스크롤 위치와 동기화
+        virtualScrollRef.current = el.scrollLeft;
 
         // 이벤트 리스너 등록 (useCallback으로 캐시된 함수들 사용)
         el.addEventListener('scroll', handleManualScroll);
@@ -238,7 +263,7 @@ export default function FeaturesSection() {
                 ))}
             </div> */}
             <div className='w-full overflow-hidden mb-25 desktop:mb-50'>
-                <div ref={trackRef} className='flex overflow-x-auto'>
+                <div ref={trackRef} className='flex overflow-x-auto no-scrollbar'>
                     {[...features, ...features].map((feature, index) => (
                         <div key={`${feature.id}-${index}`} className='shrink-0 w-[328px] mr-5'>
                             <FeatureCard feature={feature} />
