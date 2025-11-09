@@ -553,7 +553,7 @@ export default function SubmitForm() {
             )}
             <form className='px-4 desktop:px-43.5' onSubmit={handleSubmit} noValidate>
                 {/* <Toaster position='top-center' /> */}
-                <h1 className='text-title-s-22-1 text-gray-800 mb-10'>등록정보</h1>
+                <h1 className='text-title-s-22-2 text-gray-800 mb-10'>등록정보</h1>
 
                 <div className='grid desktop:grid-cols-2 gap-5 mb-5 desktop:mb-10'>
                     <div>
