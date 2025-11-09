@@ -694,7 +694,7 @@ export default function SubmitForm() {
                             </label>
                         ) : (
                             <div className='relative flex h-full w-full items-center gap-5 px-5 py-10 overflow-hidden'>
-                                <div className='flex gap-5 overflow-x-auto'>
+                                <div className='flex gap-5 overflow-x-auto mr-37.5 no-scrollbar'>
                                     {filePreviews.map((preview, index) => (
                                         <div key={index} className='relative'>
                                             <div className='w-32.5 h-32.5 shrink-0 rounded-[4px] outline outline-gray-100 overflow-hidden cursor-default'>

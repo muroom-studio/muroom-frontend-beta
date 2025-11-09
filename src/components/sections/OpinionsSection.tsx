@@ -39,7 +39,7 @@ export default function OpinionsSection() {
                 </p>
                 <p>어떻게 생각하고 있을까요?</p>
             </div>
-            <div className='h-full flex gap-3 overflow-x-auto desktop:grid desktop:grid-cols-6 desktop:gap-4 px-1'>
+            <div className='h-full flex gap-3 overflow-x-auto desktop:grid desktop:grid-cols-6 desktop:gap-4 px-1 no-scrollbar'>
                 {opinionsAboutCommunityPlatform.map((opinion, index) => {
                     return (
                         <div
