@@ -6,6 +6,7 @@ import FormLabel from '../FormLabel';
 import { useToast } from '../ToastProvider';
 import Image from 'next/image';
 import { submitInquiry } from '@/lib/api';
+import { SyncLoader } from 'react-spinners';
 
 const inputStyles = `w-full rounded-[10px] px-4 py-4 text-base-l-16-1 text-gray-700 placeholder-gray-400
     outline focus:outline-2 focus:outline-primary-400
@@ -29,6 +30,7 @@ export default function InquirySection() {
     const [errors, setErrors] = useState<FormErrors>({});
     const [limitToastShown, setLimitToastShown] = useState(false);
     const [viewModal, setViewModal] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
 
     const nameRef = useRef<HTMLInputElement>(null);
     const phoneRef = useRef<HTMLInputElement>(null);
@@ -156,6 +158,7 @@ export default function InquirySection() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // 폼의 기본 동작(페이지 새로고침) 방지
         e.preventDefault();
+        setLoadingSubmit(true);
         const newErrors: FormErrors = {};
         let hasError = false;
 
@@ -208,11 +211,11 @@ export default function InquirySection() {
 
         setErrors(newErrors);
         if (hasError) {
+            setLoadingSubmit(false);
             return;
         }
 
         toast('문의 등록을 진행하고 있습니다. 잠시만 기다려주세요.');
-        setSubmitted(true);
 
         try {
             const inquiryData = {
@@ -224,15 +227,21 @@ export default function InquirySection() {
 
             await submitInquiry(inquiryData);
 
+            setLoadingSubmit(false);
+            setSubmitted(true);
             toast('문의 등록이 완료되었습니다.');
-            setName('');
-            setPhone('');
-            setInquiry('');
-            setAgreement(false);
-            setSubmitted(false);
-            setErrors({});
-        } catch (error) {
+
+            setTimeout(() => {
+                setName('');
+                setPhone('');
+                setInquiry('');
+                setAgreement(false);
+                setSubmitted(false);
+                setErrors({});
+            }, 3000);
+        } catch (_error) {
             toast('문의등록에 실패했습니다. 다시 시도해주세요.');
+            setLoadingSubmit(false);
             setSubmitted(false);
         }
     };
@@ -412,14 +421,14 @@ export default function InquirySection() {
                 <form onSubmit={handleSubmit} noValidate>
                     <div className='grid desktop:grid-cols-3 gap-5 mb-5 desktop:mb-10'>
                         <div>
-                            <FormLabel htmlFor='name' required>
+                            <FormLabel htmlFor='inquiry-name' required>
                                 성함
                             </FormLabel>
                             <div className='relative'>
                                 <input
                                     ref={nameRef}
                                     type='text'
-                                    id='name'
+                                    id='inquiry-name'
                                     placeholder='성함을 입력해주세요'
                                     className={`${inputStyles} ${
                                         name.trim() ? 'outline-gray-600' : 'outline-gray-400'
@@ -445,14 +454,14 @@ export default function InquirySection() {
                             </div>
                         </div>
                         <div>
-                            <FormLabel htmlFor='phone' required>
+                            <FormLabel htmlFor='inquiry-phone' required>
                                 전화번호
                             </FormLabel>
                             <div className='relative'>
                                 <input
                                     ref={phoneRef}
                                     type='tel'
-                                    id='phone'
+                                    id='inquiry-phone'
                                     placeholder='연락 받으실 번호를 입력해주세요'
                                     className={`${inputStyles} ${
                                         phone.trim() ? 'outline-gray-600' : 'outline-gray-400'
@@ -584,25 +593,29 @@ export default function InquirySection() {
                     <div className='grid place-items-center desktop:place-items-start'>
                         <button
                             type='submit'
-                            disabled={submitted}
+                            disabled={submitted || loadingSubmit}
                             className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
                                             ${
-                                                !submitted
+                                                !submitted && !loadingSubmit
                                                     ? 'bg-primary-400 cursor-pointer'
                                                     : 'bg-primary-600 cursor-not-allowed'
                                             } hover:bg-primary-600`}
                         >
                             {!submitted ? (
-                                <>
-                                    <span className='mr-1'>문의하기</span>
-                                    <Image
-                                        src='/images/icons/right-arrow-icon.svg'
-                                        alt='send'
-                                        width={24}
-                                        height={24}
-                                        className=' w-6 h-6'
-                                    />
-                                </>
+                                loadingSubmit ? (
+                                    <SyncLoader size={8} margin={3} color='#ffffff' speedMultiplier={0.7} />
+                                ) : (
+                                    <>
+                                        <span className='mr-1'>문의하기</span>
+                                        <Image
+                                            src='/images/icons/right-arrow-icon.svg'
+                                            alt='send'
+                                            width={24}
+                                            height={24}
+                                            className=' w-6 h-6'
+                                        />
+                                    </>
+                                )
                             ) : (
                                 <>
                                     <span className='mr-2'>문의 완료</span>

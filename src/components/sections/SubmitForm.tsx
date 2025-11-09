@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import FormLabel from '../FormLabel';
 import { FileUploadRequest } from '@/types/api';
 import { getPresignedUrls, submitRegistration } from '@/lib/api';
+import { SyncLoader } from 'react-spinners';
 
 interface FilePreview {
     url: string;
@@ -49,6 +50,7 @@ export default function SubmitForm() {
     const [errors, setErrors] = useState<FormErrors>({});
     const [limitToastShown, setLimitToastShown] = useState(false);
     const [viewModal, setViewModal] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
 
     const nameRef = useRef<HTMLInputElement>(null);
     const phoneRef = useRef<HTMLInputElement>(null);
@@ -217,6 +219,7 @@ export default function SubmitForm() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // 폼의 기본 동작(페이지 새로고침) 방지
         e.preventDefault();
+        setLoadingSubmit(true);
         const newErrors: FormErrors = {};
         let hasError = false;
 
@@ -269,10 +272,11 @@ export default function SubmitForm() {
 
         setErrors(newErrors);
         if (hasError) {
+            setLoadingSubmit(false);
             return;
         }
 
-        setSubmitted(true);
+        // setSubmitted(true);
         toast('등록을 진행하고 있습니다. 잠시만 기다려주세요.');
 
         try {
@@ -305,6 +309,7 @@ export default function SubmitForm() {
                     });
 
                     if (!response.ok) {
+                        setLoadingSubmit(false);
                         throw new Error(`파일 업로드 실패: ${file.name} - ${response.statusText}`);
                     }
 
@@ -321,6 +326,7 @@ export default function SubmitForm() {
 
                 // 모든 파일이 성공적으로 업로드되지 않았다면 에러 처리
                 if (uploadedFileKeys.length !== roomImages.length) {
+                    setLoadingSubmit(false);
                     throw new Error('일부 이미지 파일 업로드에 실패했습니다.');
                 }
             }
@@ -337,20 +343,24 @@ export default function SubmitForm() {
 
             await submitRegistration(submissionData);
 
+            setLoadingSubmit(false);
+            setSubmitted(true);
             toast('등록이 완료되었습니다.');
-            // setSubmitted(true); // 이미 위에서 설정했으므로 중복 제거
             // 성공 시 폼 초기화 등의 추가 작업 가능
-            setName('');
-            setPhone('');
-            setServiceLink('');
-            setSuggestion('');
-            setAgreement(false);
-            setRoomImages([]);
-            setFilePreviews([]);
-            setSubmitted(false);
-            setErrors({});
+            setTimeout(() => {
+                setName('');
+                setPhone('');
+                setServiceLink('');
+                setSuggestion('');
+                setAgreement(false);
+                setRoomImages([]);
+                setFilePreviews([]);
+                setSubmitted(false);
+                setErrors({});
+            }, 3000);
         } catch (_error) {
             toast('등록에 실패했습니다. 다시 시도해주세요.');
+            setLoadingSubmit(false);
             setSubmitted(false);
         }
     };
@@ -869,23 +879,31 @@ export default function SubmitForm() {
                     <div className='grid place-items-center'>
                         <button
                             type='submit'
-                            disabled={submitted}
+                            disabled={submitted || loadingSubmit}
                             className={`flex items-center justify-center w-29 h-14 rounded-[4px] text-base-l-16-2 text-white
-                        ${
-                            !submitted ? 'bg-primary-400 cursor-pointer' : 'bg-primary-600 cursor-not-allowed'
-                        } hover:bg-primary-600`}
+                            hover:bg-primary-600
+                            ${
+                                !submitted && !loadingSubmit
+                                    ? 'bg-primary-400 cursor-pointer'
+                                    : 'bg-primary-600 cursor-not-allowed'
+                            }
+                            `}
                         >
                             {!submitted ? (
-                                <>
-                                    <span className='mr-1'>등록하기</span>
-                                    <Image
-                                        src='/images/icons/right-arrow-icon.svg'
-                                        alt='send'
-                                        width={24}
-                                        height={24}
-                                        className=' w-6 h-6'
-                                    />
-                                </>
+                                !loadingSubmit ? (
+                                    <>
+                                        <span className='mr-1'>등록하기</span>
+                                        <Image
+                                            src='/images/icons/right-arrow-icon.svg'
+                                            alt='send'
+                                            width={24}
+                                            height={24}
+                                            className=' w-6 h-6'
+                                        />
+                                    </>
+                                ) : (
+                                    <SyncLoader size={8} margin={3} color='#ffffff' speedMultiplier={0.7} />
+                                )
                             ) : (
                                 <>
                                     <span className='mr-2'>등록 완료</span>
