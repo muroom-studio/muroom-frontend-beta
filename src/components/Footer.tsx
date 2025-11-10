@@ -12,7 +12,7 @@ export default function Footer() {
                     <tr className='h-2'></tr>
                     <tr>
                         <td className='w-21.5'>사업자 등록번호</td>
-                        <td>588-01-03784</td>
+                        <td className='no-underline'>588-01-03784</td>
                     </tr>
                     <tr className='h-2'></tr>
                     <tr>
