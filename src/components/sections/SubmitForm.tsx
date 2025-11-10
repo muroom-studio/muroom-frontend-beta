@@ -292,7 +292,7 @@ export default function SubmitForm() {
         }
 
         // setSubmitted(true);
-        toast('등록을 진행하고 있습니다. 잠시만 기다려주세요.');
+        // toast('등록을 진행하고 있습니다. 잠시만 기다려주세요.');
 
         try {
             let uploadedFileKeys: string[] = [];
@@ -360,7 +360,7 @@ export default function SubmitForm() {
 
             setLoadingSubmit(false);
             setSubmitted(true);
-            toast('등록이 완료되었습니다.');
+
             // 성공 시 폼 초기화 등의 추가 작업 가능
             setTimeout(() => {
                 setName('');
@@ -372,11 +372,10 @@ export default function SubmitForm() {
 
                 filePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
                 setFilePreviews([]);
-                setSubmitted(false);
                 setErrors({});
             }, 3000);
         } catch (_error) {
-            toast('등록에 실패했습니다. 다시 시도해주세요.');
+            toast('등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
             setLoadingSubmit(false);
             setSubmitted(false);
         }
@@ -390,6 +389,40 @@ export default function SubmitForm() {
 
     return (
         <>
+            {!submitted && (
+                <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
+                    <div className='bg-white w-90 desktop:w-105 rounded-[10px]'>
+                        <div className='w-full h-14 px-5 py-4 flex justify-end border-b-[0.5px] border-gray-300'>
+                            <button onClick={() => setSubmitted(false)} className='cursor-pointer'>
+                                <Image
+                                    src='/images/icons/delete-icon.svg'
+                                    alt='close'
+                                    width={24}
+                                    height={24}
+                                    className='w-6 h-6'
+                                />
+                            </button>
+                        </div>
+
+                        <div className='px-5 py-6'>
+                            <h2 className='text-center text-base-exl-18-2 text-gray-800 mb-6'>등록완료</h2>
+                            <p className='text-center whitespace-pre-line break-keep'>
+                                {`사장님의 정보 등록이 성공적으로 완료되었습니다.\n감사합니다.`}
+                            </p>
+                        </div>
+                        <div className='px-5 py-5'>
+                            <button
+                                className='bg-primary-600 text-base-l-16-2 text-white w-full h-14 rounded-[4px]'
+                                onClick={() => {
+                                    setSubmitted(false);
+                                }}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {isMobileView && (
                 <>
                     {' '}
@@ -499,7 +532,7 @@ export default function SubmitForm() {
                 </>
             )}
             {!isMobileView && viewModal && (
-                <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
+                <div className='fixed bg-black/50 z-998 left-0 top-0 w-full h-full grid place-items-center'>
                     <div className='bg-white w-105 rounded-[10px]'>
                         <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
                             <button onClick={() => setViewModal(false)} className='cursor-pointer'>
