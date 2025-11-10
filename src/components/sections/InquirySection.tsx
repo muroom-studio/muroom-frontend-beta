@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { submitInquiry } from '@/lib/api';
 import { SyncLoader } from 'react-spinners';
 
-const inputStyles = `w-full rounded-[10px] px-4 py-4 text-base-l-16-1 text-gray-700 placeholder-gray-400
+const inputStyles = `w-full bg-white rounded-[10px] px-4 py-4 text-base-l-16-1 text-gray-700 placeholder-gray-400
     outline focus:outline-2 focus:outline-primary-400
     hover:shadow-level-0`;
 
@@ -496,7 +496,7 @@ export default function InquirySection() {
                                 id='inquiry'
                                 rows={5}
                                 placeholder='문의하고 싶으신 사항이 있으시다면 작성해주세요'
-                                className={`w-full rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none
+                                className={`w-full bg-white rounded-[10px] px-4 py-5 text-base-l-16-1 text-gray-700 resize-none
                                                 outline outline-gray-400 placeholder-gray-400 focus:outline-2 focus:outline-primary-400
                                                 hover:shadow-level-0 ${
                                                     inquiry.trim() ? 'outline-gray-600' : 'outline-gray-400'
