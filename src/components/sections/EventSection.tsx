@@ -42,7 +42,7 @@ export default function EventSection() {
                     </div>
                     <div className='text-base-exl-18-1 text-gray-600 mb-10 text-center'>
                         <p>
-                            음악인을 위한 전문 커뮤니티 ‘buv’,‘GROUNZ 그라운즈’ 인스타그램 피드와 스토리에 내 작업실
+                            음악인을 위한 전문 커뮤니티 ‘buv’, ‘GROUNZ 그라운즈’ 인스타그램 피드와 스토리에 내 작업실
                             무료 홍보 기회
                         </p>
                         <p>
