@@ -126,7 +126,7 @@ const FAQItem = ({ faq, isOpened, onClick }: { faq: FAQ; isOpened: boolean; onCl
         <div className='mb-6 last:mb-0'>
             <div
                 id='question'
-                className={`border rounded-20 transition-all duration-300 ease-in-out cursor-pointer
+                className={`border bg-white rounded-20 transition-all duration-300 ease-in-out cursor-pointer
                     ${isOpened ? 'border-gray-600 shadow-level-0' : 'border-gray-200'}
                 `}
                 onClick={onClick}
