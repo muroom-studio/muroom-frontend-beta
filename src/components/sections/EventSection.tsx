@@ -9,7 +9,7 @@ import { useInView } from 'react-intersection-observer';
 export default function EventSection() {
     const toast = useToast();
     const [remainingCount, setRemainingCount] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     // 1. 데스크탑 카운터 전용 useInView 훅
@@ -25,33 +25,27 @@ export default function EventSection() {
     });
 
     useEffect(() => {
-        // 데스크톱 또는 모바일 카운터가 화면에 보이기 시작했다면
-        if (isDesktopCounterVisible || isMobileCounterVisible) {
-            // *중요*: 이미 로딩 중이거나, 데이터를 가져왔거나, 에러가 있다면 중복 호출 방지
-            if (isLoading || remainingCount !== null || error !== null) {
-                return;
+        const fetchCount = async () => {
+            try {
+                const count = await getRemainingCount();
+                setRemainingCount(count);
+            } catch (_error) {
+                setError(`이벤트 참가자 수를\n불러오는데 실패했습니다.`);
+            } finally {
+                setIsLoading(false);
             }
+        };
 
-            const fetchCount = async () => {
-                try {
-                    // 3. API 호출 '직전'에 로딩 상태를 true로 설정
-                    setIsLoading(true);
-                    const count = await getRemainingCount();
-                    setRemainingCount(count);
-                } catch (err) {
-                    console.error('Failed to fetch remaining count:', err);
-                    setError(`이벤트 참가자 수를\n불러오는데 실패했습니다.`);
-                    // 4. 에러도 '이때' 발생하므로 토스트가 제때 뜹니다.
-                    toast('이벤트 참가자 수를 불러오는 데 실패했습니다.');
-                } finally {
-                    setIsLoading(false);
-                }
-            };
+        fetchCount();
+    }, []);
 
-            fetchCount();
+    useEffect(() => {
+        const isCounterVisible = isDesktopCounterVisible || isMobileCounterVisible;
+        if (error && isCounterVisible) {
+            toast('이벤트 참가자 수를 불러오는데 실패했습니다.');
         }
-        // 5. 이 Effect가 의존하는 모든 상태를 배열에 추가합니다.
-    }, [isDesktopCounterVisible, isMobileCounterVisible, isLoading, remainingCount, error, toast]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [error, isDesktopCounterVisible, isMobileCounterVisible]);
 
     return (
         <section
@@ -157,11 +151,15 @@ export default function EventSection() {
                             <p className='whitespace-pre-line break-keep leading-[200%]'>{`\n지금까지`}</p>
 
                             <div
-                                ref={desktopCounterRef}
+                                ref={desktopCounterRef} // 4. ref 할당
                                 className='mx-5.5 w-[343px] h-[343px] bg-primary-600 rounded-[30px] text-white grid place-items-center'
                             >
-                                {error ? (
-                                    // 1. 에러가 발생한 경우
+                                {/* 5. 렌더링 로직: inView 상태를 최우선으로 체크 */}
+                                {!isDesktopCounterVisible ? (
+                                    // 5a. [아직 안 봄]: AnimatedCounter가 static 0을 렌더링
+                                    <AnimatedCounter value={0} inView={false} />
+                                ) : // 5b. [이제 봄]: API 결과를 렌더링 (로딩/에러/성공)
+                                error ? (
                                     <div className='relative w-full grid place-items-center h-full text-center p-4 pb-10'>
                                         <p className='text-[240px] font-bold'>-</p>
                                         <p className='absolute bottom-8 text-base mt-2 whitespace-pre-line break-keep'>
@@ -169,16 +167,13 @@ export default function EventSection() {
                                         </p>
                                     </div>
                                 ) : isLoading ? (
-                                    // 2. 로딩 중인 경우
                                     <div className='relative -top-2'>
                                         <SyncLoader size={20} margin={15} color='#ffffff' speedMultiplier={0.7} />
                                     </div>
                                 ) : remainingCount !== null ? (
-                                    // 3. 성공한 경우
-                                    <AnimatedCounter value={remainingCount} inView={isDesktopCounterVisible} />
+                                    <AnimatedCounter value={remainingCount} inView={true} />
                                 ) : (
-                                    // 4. (혹시 모를) 데이터가 null인 경우
-                                    <AnimatedCounter value={0} inView={isDesktopCounterVisible} />
+                                    <AnimatedCounter value={0} inView={true} />
                                 )}
                             </div>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>
@@ -276,11 +271,15 @@ export default function EventSection() {
                         </div>
                         <div className='w-full flex items-center justify-center mb-20 font-semibold text-special-m-40-size leading-[140%]'>
                             <div
-                                ref={mobileCounterRef}
+                                ref={mobileCounterRef} // 4. ref 할당
                                 className='mr-3 w-50 h-50 bg-primary-600 rounded-[30px] text-white grid place-items-center'
                             >
-                                {error ? (
-                                    // 1. 에러
+                                {/* 5. 렌더링 로직: inView 상태를 최우선으로 체크 */}
+                                {!isMobileCounterVisible ? (
+                                    // 5a. [아직 안 봄]: AnimatedCounter가 static 0을 렌더링
+                                    <AnimatedCounter value={0} inView={false} />
+                                ) : // 5b. [이제 봄]: API 결과를 렌더링 (로딩/에러/성공)
+                                error ? (
                                     <div className='relative w-full grid place-items-center h-full text-center p-4 pb-6'>
                                         <p className='text-[120px] font-bold'>-</p>
                                         <p className='absolute bottom-5 text-base-m-14-2 mt-2 whitespace-pre-line break-keep'>
@@ -288,16 +287,13 @@ export default function EventSection() {
                                         </p>
                                     </div>
                                 ) : isLoading ? (
-                                    // 2. 로딩
                                     <div className='relative'>
                                         <SyncLoader size={20} margin={15} color='#ffffff' speedMultiplier={0.7} />
                                     </div>
                                 ) : remainingCount !== null ? (
-                                    // 3. 성공
-                                    <AnimatedCounter value={remainingCount} inView={isMobileCounterVisible} />
+                                    <AnimatedCounter value={remainingCount} inView={true} />
                                 ) : (
-                                    // 4. 데이터가 null (ex: 0으로 표시)
-                                    <AnimatedCounter value={0} inView={isMobileCounterVisible} />
+                                    <AnimatedCounter value={0} inView={true} />
                                 )}
                             </div>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>
