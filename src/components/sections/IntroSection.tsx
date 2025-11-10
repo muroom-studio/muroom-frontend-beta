@@ -20,7 +20,7 @@ export default function IntroSection() {
                     <span className='font-semibold'>뮤룸</span>은 기존 플랫폼 게시판 형태의 불편을 개선해 고객들이 훨씬
                     사용하기 쉬운 새로운 작업실 매물 탐색 플랫폼입니다.
                 </p>
-                <p>사용자 테스트 결과, 기존 플랫폼 대비 40% 이상의 사용자 만족도 상승을 기록했습니다.</p>
+                <p>사용자 테스트 결과, 기존 플랫폼 대비 25% 이상의 사용자 만족도 상승을 기록했습니다.</p>
                 <p>12월 런칭 예정이며, 현재 함께하실 사장님을 모집 중입니다.</p>
             </div>
             <div className='desktop:hidden leading-[150%] text-lg mb-8 desktop:mb-24 whitespace-pre-line break-keep'>
@@ -29,7 +29,7 @@ export default function IntroSection() {
                     사용하기 쉬운 새로운 작업실 매물 탐색 플랫폼입니다.
                 </p>
                 <br />
-                <p>사용자 테스트 결과, 기존 플랫폼 대비 40% 이상의 사용자 만족도 상승을 기록했습니다.</p>
+                <p>사용자 테스트 결과, 기존 플랫폼 대비 25% 이상의 사용자 만족도 상승을 기록했습니다.</p>
                 <br />
                 <p>12월 런칭 예정이며, 현재 함께하실 사장님을 모집 중입니다.</p>
             </div>
