@@ -9,26 +9,27 @@ export default function BackgroundWithPatterns() {
         <div
             id='background-with-title'
             className='
-                absolute left-0 col-span-full w-full h-700
+                absolute left-0 col-span-full w-full h-[700px] desktop:h-700
                 rounded-t-[30px]
-                bg-linear-to-b from-primary-400 from-[-60px] to-white to-[600px]
+                bg-linear-to-b from-primary-400 from-[-60px] via-[#DDD6FF] via-45% desktop:via-20% to-white to-[400px] desktop:to-[700px]
                 flex justify-center items-center
                 overflow-hidden
                 '
         >
+            {/* to-[450px] desktop:to-[600px] */}
             <Image
                 src='/images/patterns/hexagon-1.svg'
                 alt='hexagonal pattern'
                 width={90}
                 height={90}
-                className='absolute top-27 desktop:top-38 left-18 opacity-30 desktop:left-28 desktop:opacity-100 w-[90px] h-[90px]'
+                className='hidden desktop:block absolute top-38 left-18 opacity-30 desktop:left-28 desktop:opacity-100 w-[90px] h-[90px]'
             />
             <Image
                 src='/images/patterns/hexagon-2.svg'
                 alt='hexagonal pattern'
                 width={55}
                 height={55}
-                className='absolute top-12 right-12 desktop:right-70 w-[70px] h-[70px]'
+                className='hidden desktop:block absolute top-12 right-70 w-[70px] h-[70px]'
             />
 
             <SquarePattern styles={'top-8 left-45 bg-primary-200 hidden desktop:block'} />
@@ -43,7 +44,7 @@ export default function BackgroundWithPatterns() {
                 alt='hexagonal pattern'
                 width={190.64}
                 height={188.93}
-                className='absolute top-56 desktop:top-113 right-5 w-[190.64px] h-[188.93px]'
+                className='hidden desktop:block absolute top-113 right-5 w-[190.64px] h-[188.93px]'
             />
             <Image
                 src='/images/patterns/iconic-1.svg'
