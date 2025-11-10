@@ -3,8 +3,10 @@ import AnimatedCounter from '../AnimatedCounter';
 import { getRemainingCount } from '@/lib/api';
 import { useEffect, useState } from 'react';
 import { SyncLoader } from 'react-spinners';
+import { useToast } from '../ToastProvider';
 
 export default function EventSection() {
+    const toast = useToast();
     const [remainingCount, setRemainingCount] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,7 +19,8 @@ export default function EventSection() {
                 setRemainingCount(count);
             } catch (err) {
                 console.error('Failed to fetch remaining count:', err);
-                setError('데이터를 불러오는 데 실패했습니다.');
+                setError(`이벤트 참가자 수를\n불러오는데 실패했습니다.`);
+                toast('이벤트 참가자 수를 불러오는 데 실패했습니다.');
             } finally {
                 setIsLoading(false);
             }
@@ -61,7 +64,7 @@ export default function EventSection() {
                 {remainingCount !== null && remainingCount === 0 ? (
                     <>
                         <div className='absolute w-full h-[951px] flex items-end justify-center pb-10 bg-white/80 top-0 mb-25'>
-                            <p className='font-bold text-[32px] text-gray-600'>
+                            <p className='font-bold text-title-xl-32-size text-gray-600'>
                                 선착순 이벤트가 종료되었습니다. 성원에 감사드립니다.
                             </p>
                         </div>
@@ -128,13 +131,27 @@ export default function EventSection() {
                         </div>
                         <div className='w-full flex items-center justify-center mb-25 font-semibold text-6xl leading-[140%]'>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>{`\n지금까지`}</p>
+
                             <div className='mx-5.5 w-[343px] h-[343px] bg-primary-600 rounded-[30px] text-white grid place-items-center'>
-                                {isLoading || error || remainingCount === null ? (
+                                {error ? (
+                                    // 1. 에러가 발생한 경우
+                                    <div className='relative w-full grid place-items-center h-full text-center p-4 pb-10'>
+                                        <p className='text-[240px] font-bold'>-</p>
+                                        <p className='absolute bottom-8 text-base mt-2 whitespace-pre-line break-keep'>
+                                            {error}
+                                        </p>
+                                    </div>
+                                ) : isLoading ? (
+                                    // 2. 로딩 중인 경우
                                     <div className='relative -top-2'>
                                         <SyncLoader size={20} margin={15} color='#ffffff' speedMultiplier={0.7} />
                                     </div>
-                                ) : (
+                                ) : remainingCount !== null ? (
+                                    // 3. 성공한 경우
                                     <AnimatedCounter value={remainingCount} />
+                                ) : (
+                                    // 4. (혹시 모를) 데이터가 null인 경우
+                                    <AnimatedCounter value={0} />
                                 )}
                             </div>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>
@@ -230,14 +247,27 @@ export default function EventSection() {
                                 </div>
                             </div>
                         </div>
-                        <div className='w-full flex items-center justify-center mb-20 font-semibold text-[40px] leading-[140%]'>
+                        <div className='w-full flex items-center justify-center mb-20 font-semibold text-special-m-40-size leading-[140%]'>
                             <div className='mr-3 w-50 h-50 bg-primary-600 rounded-[30px] text-white grid place-items-center'>
-                                {isLoading || error || remainingCount === null ? (
+                                {error ? (
+                                    // 1. 에러
+                                    <div className='relative w-full grid place-items-center h-full text-center p-4 pb-6'>
+                                        <p className='text-[120px] font-bold'>-</p>
+                                        <p className='absolute bottom-5 text-base-m-14-2 mt-2 whitespace-pre-line break-keep'>
+                                            {error}
+                                        </p>
+                                    </div>
+                                ) : isLoading ? (
+                                    // 2. 로딩
                                     <div className='relative'>
                                         <SyncLoader size={20} margin={15} color='#ffffff' speedMultiplier={0.7} />
                                     </div>
-                                ) : (
+                                ) : remainingCount !== null ? (
+                                    // 3. 성공
                                     <AnimatedCounter value={remainingCount} />
+                                ) : (
+                                    // 4. 데이터가 null (ex: 0으로 표시)
+                                    <AnimatedCounter value={0} />
                                 )}
                             </div>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>
