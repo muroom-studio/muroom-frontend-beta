@@ -32,7 +32,9 @@ const MAX_FILES = 10;
 const PdfPreview = dynamic(() => import('../PdfPreview'), {
     ssr: false, // 서버 사이드 렌더링 비활성화
     loading: () => (
-        <div className='flex h-32 w-32 items-center justify-center bg-gray-100 text-xs'>미리보기 로딩...</div>
+        <div className='flex h-32 w-32 items-center justify-center rounded-[4px] bg-gray-100 text-xs'>
+            미리보기 로딩...
+        </div>
     ), // 로딩 중 UI
 });
 
@@ -56,17 +58,19 @@ export default function SubmitForm() {
     const phoneRef = useRef<HTMLInputElement>(null);
     const serviceLinkRef = useRef<HTMLInputElement>(null);
     const agreementRef = useRef<HTMLDivElement>(null);
+    const filePreviewsRef = useRef<FilePreview[]>([]);
 
     const [isDragging, setIsDragging] = useState(false);
     const [dragY, setDragY] = useState(0); // 현재 드래그된 Y축 거리
     const dragStartY = useRef<number>(0);
     const DRAG_THRESHOLD = 100;
 
+    filePreviewsRef.current = filePreviews;
     // [추가] 메모리 누수 방지를 위한 cleanup effect
     useEffect(() => {
         // 컴포넌트가 언마운트될 때 실행될 cleanup 함수
         return () => {
-            filePreviews.forEach((preview) => {
+            filePreviewsRef.current.forEach((preview) => {
                 URL.revokeObjectURL(preview.url);
             });
         };
@@ -725,7 +729,7 @@ export default function SubmitForm() {
                                 <div className='flex gap-5 overflow-x-auto mr-37.5 no-scrollbar'>
                                     {filePreviews.map((preview, index) => (
                                         <div key={index} className='relative'>
-                                            <div className='w-32.5 h-32.5 shrink-0 rounded-[4px] outline outline-gray-100 overflow-hidden cursor-default'>
+                                            <div className='w-32.5 h-32.5 shrink-0 rounded-[4px] border border-gray-200 overflow-hidden cursor-default'>
                                                 {preview.type.startsWith('image/') ? (
                                                     <Image
                                                         src={preview.url}
