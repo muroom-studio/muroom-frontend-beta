@@ -4,30 +4,54 @@ import { getRemainingCount } from '@/lib/api';
 import { useEffect, useState } from 'react';
 import { SyncLoader } from 'react-spinners';
 import { useToast } from '../ToastProvider';
+import { useInView } from 'react-intersection-observer';
 
 export default function EventSection() {
     const toast = useToast();
     const [remainingCount, setRemainingCount] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchCount = async () => {
-            try {
-                setIsLoading(true);
-                const count = await getRemainingCount();
-                setRemainingCount(count);
-            } catch (err) {
-                console.error('Failed to fetch remaining count:', err);
-                setError(`이벤트 참가자 수를\n불러오는데 실패했습니다.`);
-                toast('이벤트 참가자 수를 불러오는 데 실패했습니다.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    // 1. 데스크탑 카운터 전용 useInView 훅
+    const { ref: desktopCounterRef, inView: isDesktopCounterVisible } = useInView({
+        triggerOnce: true,
+        threshold: 0.1,
+    });
 
-        fetchCount();
-    }, []);
+    // 2. 모바일 카운터 전용 useInView 훅
+    const { ref: mobileCounterRef, inView: isMobileCounterVisible } = useInView({
+        triggerOnce: true,
+        threshold: 0.1,
+    });
+
+    useEffect(() => {
+        // 데스크톱 또는 모바일 카운터가 화면에 보이기 시작했다면
+        if (isDesktopCounterVisible || isMobileCounterVisible) {
+            // *중요*: 이미 로딩 중이거나, 데이터를 가져왔거나, 에러가 있다면 중복 호출 방지
+            if (isLoading || remainingCount !== null || error !== null) {
+                return;
+            }
+
+            const fetchCount = async () => {
+                try {
+                    // 3. API 호출 '직전'에 로딩 상태를 true로 설정
+                    setIsLoading(true);
+                    const count = await getRemainingCount();
+                    setRemainingCount(count);
+                } catch (err) {
+                    console.error('Failed to fetch remaining count:', err);
+                    setError(`이벤트 참가자 수를\n불러오는데 실패했습니다.`);
+                    // 4. 에러도 '이때' 발생하므로 토스트가 제때 뜹니다.
+                    toast('이벤트 참가자 수를 불러오는 데 실패했습니다.');
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            fetchCount();
+        }
+        // 5. 이 Effect가 의존하는 모든 상태를 배열에 추가합니다.
+    }, [isDesktopCounterVisible, isMobileCounterVisible, isLoading, remainingCount, error, toast]);
 
     return (
         <section
@@ -132,7 +156,10 @@ export default function EventSection() {
                         <div className='w-full flex items-center justify-center mb-25 font-semibold text-6xl leading-[140%]'>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>{`\n지금까지`}</p>
 
-                            <div className='mx-5.5 w-[343px] h-[343px] bg-primary-600 rounded-[30px] text-white grid place-items-center'>
+                            <div
+                                ref={desktopCounterRef}
+                                className='mx-5.5 w-[343px] h-[343px] bg-primary-600 rounded-[30px] text-white grid place-items-center'
+                            >
                                 {error ? (
                                     // 1. 에러가 발생한 경우
                                     <div className='relative w-full grid place-items-center h-full text-center p-4 pb-10'>
@@ -148,10 +175,10 @@ export default function EventSection() {
                                     </div>
                                 ) : remainingCount !== null ? (
                                     // 3. 성공한 경우
-                                    <AnimatedCounter value={remainingCount} />
+                                    <AnimatedCounter value={remainingCount} inView={isDesktopCounterVisible} />
                                 ) : (
                                     // 4. (혹시 모를) 데이터가 null인 경우
-                                    <AnimatedCounter value={0} />
+                                    <AnimatedCounter value={0} inView={isDesktopCounterVisible} />
                                 )}
                             </div>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>
@@ -248,7 +275,10 @@ export default function EventSection() {
                             </div>
                         </div>
                         <div className='w-full flex items-center justify-center mb-20 font-semibold text-special-m-40-size leading-[140%]'>
-                            <div className='mr-3 w-50 h-50 bg-primary-600 rounded-[30px] text-white grid place-items-center'>
+                            <div
+                                ref={mobileCounterRef}
+                                className='mr-3 w-50 h-50 bg-primary-600 rounded-[30px] text-white grid place-items-center'
+                            >
                                 {error ? (
                                     // 1. 에러
                                     <div className='relative w-full grid place-items-center h-full text-center p-4 pb-6'>
@@ -264,10 +294,10 @@ export default function EventSection() {
                                     </div>
                                 ) : remainingCount !== null ? (
                                     // 3. 성공
-                                    <AnimatedCounter value={remainingCount} />
+                                    <AnimatedCounter value={remainingCount} inView={isMobileCounterVisible} />
                                 ) : (
                                     // 4. 데이터가 null (ex: 0으로 표시)
-                                    <AnimatedCounter value={0} />
+                                    <AnimatedCounter value={0} inView={isMobileCounterVisible} />
                                 )}
                             </div>
                             <p className='whitespace-pre-line break-keep leading-[200%]'>
