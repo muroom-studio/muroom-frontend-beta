@@ -1,3 +1,11 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    formatDetection: {
+        telephone: false,
+    },
+};
+
 export default function Footer() {
     return (
         <footer className='w-full px-4 desktop:px-20 pt-5 pb-15'>
