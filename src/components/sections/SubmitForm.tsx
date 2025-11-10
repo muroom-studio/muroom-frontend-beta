@@ -61,6 +61,17 @@ export default function SubmitForm() {
     const [dragY, setDragY] = useState(0); // 현재 드래그된 Y축 거리
     const dragStartY = useRef<number>(0);
     const DRAG_THRESHOLD = 100;
+
+    // [추가] 메모리 누수 방지를 위한 cleanup effect
+    useEffect(() => {
+        // 컴포넌트가 언마운트될 때 실행될 cleanup 함수
+        return () => {
+            filePreviews.forEach((preview) => {
+                URL.revokeObjectURL(preview.url);
+            });
+        };
+    }, []); // filePreviews 배열이 변경될 때마다 effect를 재등록합니다.
+
     /** 드래그 시작 (손가락/마우스 누름) */
     const handleDragStart = (e: React.PointerEvent<HTMLElement>) => {
         // e.preventDefault(); // 버튼의 기본 클릭 이벤트를 막을 수 있으므로 주석 처리
@@ -130,7 +141,7 @@ export default function SubmitForm() {
             return;
         }
 
-        const combinedFiles = [...roomImages, ...Array.from(newFiles)];
+        const combinedFiles = [...Array.from(newFiles), ...roomImages];
 
         if (combinedFiles.length > MAX_FILES) {
             toast(`파일은 최대 ${MAX_FILES}개까지 첨부할 수 있습니다.`);
@@ -147,7 +158,7 @@ export default function SubmitForm() {
         );
 
         setRoomImages(combinedFiles);
-        setFilePreviews((prevPreviews) => [...prevPreviews, ...newPreviewUrls]);
+        setFilePreviews((prevPreviews) => [...newPreviewUrls, ...prevPreviews]);
 
         e.target.value = '';
     };
@@ -354,6 +365,8 @@ export default function SubmitForm() {
                 setSuggestion('');
                 setAgreement(false);
                 setRoomImages([]);
+
+                filePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
                 setFilePreviews([]);
                 setSubmitted(false);
                 setErrors({});
@@ -667,7 +680,7 @@ export default function SubmitForm() {
                     </div>
                 </div>
 
-                <div className='mb-5 desktop:mb-10'>
+                <div className='mb-5 desktop:mb-10 relative'>
                     <FormLabel htmlFor='roomImage'>작업실 정보 이미지</FormLabel>
                     <div className='hidden desktop:flex items-center justify-between'>
                         <span className='-mt-1 mb-2 text-base-l-16-1 text-gray-400'>
@@ -678,6 +691,11 @@ export default function SubmitForm() {
                             <span className='text-gray-400'>/</span>
                             <span className='text-gray-400'>10</span>
                         </div>
+                    </div>
+                    <div className='absolute top-0.5 right-0 desktop:hidden flex items-center text-base-l-16-1'>
+                        <span className='text-gray-600'>{filePreviews.length}</span>
+                        <span className='text-gray-400'>/</span>
+                        <span className='text-gray-400'>10</span>
                     </div>
                     <div
                         className={`relative flex flex-col items-center justify-center
