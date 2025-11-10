@@ -1,11 +1,3 @@
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-    formatDetection: {
-        telephone: false,
-    },
-};
-
 export default function Footer() {
     return (
         <footer className='w-full px-4 desktop:px-20 pt-5 pb-15'>
@@ -20,7 +12,7 @@ export default function Footer() {
                     <tr className='h-2'></tr>
                     <tr>
                         <td className='w-21.5'>사업자 등록번호</td>
-                        <td className='no-underline'>588-01-03784</td>
+                        <td className='no-underline select-none'>588-01-03784</td>
                     </tr>
                     <tr className='h-2'></tr>
                     <tr>
