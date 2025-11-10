@@ -93,7 +93,7 @@ export default function ProblemsSection() {
                     <span className='my-2.5 desktop:my-4 font-bold text-[20px] desktop:text-3xl leading-6 desktop:leading-9 text-white'>
                         비효율적인 정보 탐색
                     </span>
-                    <div className='w-full pt-[30px] pb-10 desktop:py-10 text-center rounded-b-[10px] bg-white text-[18px] desktop:text-[1.75rem] font-medium leading-[140%] shadow-level-1'>
+                    <div className='w-full pt-[30px] pb-10 desktop:py-10 text-center rounded-b-[10px] bg-white text-[18px] desktop:text-2xl font-medium leading-[140%] shadow-level-1'>
                         <p>이용자들은 수많은 글 속에서</p>
                         <p>필요한 정보를 찾느라 피로를 느낍니다.</p>
                     </div>
@@ -102,7 +102,7 @@ export default function ProblemsSection() {
                     <span className='my-2.5 desktop:my-4 font-bold text-[20px] desktop:text-3xl leading-6 desktop:leading-9 text-white'>
                         매물의 노출 한계
                     </span>
-                    <div className='w-full pt-[30px] pb-10 desktop:py-10 text-center rounded-b-[10px] bg-white text-[18px] desktop:text-[1.75rem] font-medium leading-[140%] shadow-level-1'>
+                    <div className='w-full pt-[30px] pb-10 desktop:py-10 text-center rounded-b-[10px] bg-white text-[18px] desktop:text-2xl font-medium leading-[140%] shadow-level-1'>
                         <p>좋은 시설을 갖춰도, 검색되지 않으면</p>
                         <p>외면받기 쉽습니다.</p>
                     </div>
