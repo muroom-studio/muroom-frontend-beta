@@ -743,7 +743,7 @@ export default function SubmitForm() {
                         {filePreviews.length === 0 ? (
                             <label
                                 htmlFor='file-upload'
-                                className='grid place-items-center w-full h-full py-10 cursor-pointer'
+                                className='grid place-items-center w-full h-full desktop:h-[210px] py-5 desktop:py-10 cursor-pointer'
                             >
                                 <Image
                                     src='/images/icons/upload-file-icon.svg'
@@ -755,11 +755,11 @@ export default function SubmitForm() {
                                 <p className='text-base-l-16-1 text-gray-600'>png, pdf, jpg, jpeg 등</p>
                             </label>
                         ) : (
-                            <div className='relative flex h-full w-full items-center gap-5 px-5 py-10 overflow-hidden'>
-                                <div className='flex gap-5 overflow-x-auto mr-37.5 no-scrollbar'>
+                            <div className='relative flex h-full w-full items-center gap-5 pl-3 desktop:px-5 py-3 desktop:py-10 overflow-hidden'>
+                                <div className='flex gap-2 desktop:gap-5 overflow-x-auto mr-36 desktop:mr-37.5 no-scrollbar'>
                                     {filePreviews.map((preview, index) => (
                                         <div key={index} className='relative'>
-                                            <div className='w-32.5 h-32.5 shrink-0 rounded-[4px] border border-gray-200 overflow-hidden cursor-default'>
+                                            <div className='w-30 h-30 desktop:w-32.5 desktop:h-32.5 shrink-0 rounded-[4px] border border-gray-200 overflow-hidden cursor-default'>
                                                 {preview.type.startsWith('image/') ? (
                                                     <Image
                                                         src={preview.url}
@@ -793,10 +793,10 @@ export default function SubmitForm() {
                                 </div>
                                 <label
                                     htmlFor='file-upload'
-                                    className='absolute right-0 w-42.5 h-32.5 grid place-items-center bg-white cursor-pointer'
+                                    className='absolute right-0 w-36 desktop:w-42.5 h-32.5 grid place-items-center bg-white cursor-pointer'
                                 >
                                     <div
-                                        className='w-32.5 h-32.5 rounded-[4px] border border-gray-300 border-dashed flex flex-col items-center justify-center
+                                        className='w-30 h-30 desktop:w-32.5 desktop:h-32.5 rounded-[4px] border border-gray-300 border-dashed flex flex-col items-center justify-center
                                     hover:shadow-level-0'
                                     >
                                         <Image
