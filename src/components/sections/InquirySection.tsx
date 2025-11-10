@@ -215,8 +215,6 @@ export default function InquirySection() {
             return;
         }
 
-        toast('문의 등록을 진행하고 있습니다. 잠시만 기다려주세요.');
-
         try {
             const inquiryData = {
                 name,
@@ -230,15 +228,6 @@ export default function InquirySection() {
             setLoadingSubmit(false);
             setSubmitted(true);
             toast('문의 등록이 완료되었습니다.');
-
-            setTimeout(() => {
-                setName('');
-                setPhone('');
-                setInquiry('');
-                setAgreement(false);
-                setSubmitted(false);
-                setErrors({});
-            }, 3000);
         } catch (_error) {
             toast('문의등록에 실패했습니다. 다시 시도해주세요.');
             setLoadingSubmit(false);
@@ -260,6 +249,45 @@ export default function InquirySection() {
 
     return (
         <>
+            {submitted && (
+                <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
+                    <div className='bg-white w-90 desktop:w-105 rounded-[10px]'>
+                        <div className='w-full h-14 px-5 py-4 flex justify-end border-b-[0.5px] border-gray-300'>
+                            <button onClick={() => setSubmitted(false)} className='cursor-pointer'>
+                                <Image
+                                    src='/images/icons/delete-icon.svg'
+                                    alt='close'
+                                    width={24}
+                                    height={24}
+                                    className='w-6 h-6'
+                                />
+                            </button>
+                        </div>
+
+                        <div className='px-5 py-6'>
+                            <h2 className='text-center text-base-exl-18-2 text-gray-800 mb-6'>1:1 문의완료</h2>
+                            <p className='text-center whitespace-pre-line break-keep'>
+                                {`사장님의 문의가 정상적으로 접수되었습니다.\n빠른 시일 내에 답변 드리겠습니다.`}
+                            </p>
+                        </div>
+                        <div className='px-5 py-5'>
+                            <button
+                                className='bg-primary-600 text-base-l-16-2 text-white w-full h-14 rounded-[4px]'
+                                onClick={() => {
+                                    setSubmitted(false);
+                                    setName('');
+                                    setPhone('');
+                                    setInquiry('');
+                                    setAgreement(false);
+                                    setErrors({});
+                                }}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {isMobileView && (
                 <>
                     {' '}

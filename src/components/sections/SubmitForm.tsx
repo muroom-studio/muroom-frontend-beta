@@ -299,7 +299,6 @@ export default function SubmitForm() {
 
             // 1. 이미지 파일이 있는 경우, Presigned URL 요청 및 S3 업로드
             if (roomImages.length > 0) {
-                toast('이미지 업로드 준비 중...');
                 const fileRequests: FileUploadRequest[] = roomImages.map((file) => ({
                     type: 'BETA_PROPERTY',
                     fileName: file.name,
@@ -360,20 +359,6 @@ export default function SubmitForm() {
 
             setLoadingSubmit(false);
             setSubmitted(true);
-
-            // 성공 시 폼 초기화 등의 추가 작업 가능
-            setTimeout(() => {
-                setName('');
-                setPhone('');
-                setServiceLink('');
-                setSuggestion('');
-                setAgreement(false);
-                setRoomImages([]);
-
-                filePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
-                setFilePreviews([]);
-                setErrors({});
-            }, 3000);
         } catch (_error) {
             toast('등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
             setLoadingSubmit(false);
@@ -389,7 +374,7 @@ export default function SubmitForm() {
 
     return (
         <>
-            {!submitted && (
+            {submitted && (
                 <div className='fixed bg-black/50 z-999 left-0 top-0 w-full h-full grid place-items-center'>
                     <div className='bg-white w-90 desktop:w-105 rounded-[10px]'>
                         <div className='w-full h-14 px-5 py-4 flex justify-end border-b-[0.5px] border-gray-300'>
@@ -415,6 +400,18 @@ export default function SubmitForm() {
                                 className='bg-primary-600 text-base-l-16-2 text-white w-full h-14 rounded-[4px]'
                                 onClick={() => {
                                     setSubmitted(false);
+
+                                    // 폼 초기화 등의 추가 작업 가능
+                                    setName('');
+                                    setPhone('');
+                                    setServiceLink('');
+                                    setSuggestion('');
+                                    setAgreement(false);
+                                    setRoomImages([]);
+
+                                    filePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
+                                    setFilePreviews([]);
+                                    setErrors({});
                                 }}
                             >
                                 확인
