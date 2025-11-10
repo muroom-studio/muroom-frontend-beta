@@ -252,7 +252,7 @@ export default function FeaturesSection() {
             >
                 <div className='mb-4 desktop:mb-14 leading-[140%] text-2xl desktop:text-special-m-40-size font-bold text-gray-800'>
                     <p>
-                        <span className='text-primary-600'>지도+리스트</span> UI로 사장님의 연습실을
+                        <span className='text-primary-600'>지도+리스트</span> UI로 사장님의 작업실을
                     </p>
                     <p>가장 빠르고 정확하게 연결합니다.</p>
                 </div>

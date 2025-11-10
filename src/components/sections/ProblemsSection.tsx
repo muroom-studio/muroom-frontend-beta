@@ -23,11 +23,11 @@ export default function ProblemsSection() {
     return (
         <section id='problems-section' className='col-span-full'>
             <div className='leading-[140%] text-2xl desktop:text-special-m-40-size font-bold mb-10 desktop:mb-14'>
-                <p>고객은 음악 연습실 탐색에서</p>
+                <p>고객은 음악 작업실 탐색에서</p>
                 <p>이러한 불편함을 드러냈습니다.</p>
             </div>
             <div className='leading-5 text-[1rem] font-normal text-gray-500 mb-4 desktop:mb-10'>
-                장기 연습실 대여 플랫폼 관련 설문조사 <br className='desktop:hidden' />
+                장기 작업실 대여 플랫폼 관련 설문조사 <br className='desktop:hidden' />
                 음악 작업실 사용자 109명 대상으로 조사했습니다.
             </div>
             <div className='w-full px-4 py-8 desktop:py-10 desktop:px-50 outline outline-gray-100 rounded-[10px] shadow-level-1 mb-6 desktop:mb-14'>

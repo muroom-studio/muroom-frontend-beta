@@ -7,7 +7,7 @@ export default function IntroSection() {
             className='grid place-items-center col-span-full w-full text-center row-start-1 pt-35 desktop:pt-50 mb-14 desktop:mb-50'
         >
             <div className='leading-[150%] text-[1rem] desktop:text-[1.25rem] font-bold text-primary-500 mb-6'>
-                <p>새로운 음악 연습실 대여 플랫폼, 뮤룸</p>
+                <p>새로운 음악 작업실 대여 플랫폼, 뮤룸</p>
             </div>
             <div className='leading-[140%] text-2xl desktop:text-5xl font-bold text-black mb-14'>
                 <p>복잡한 커뮤니티 플랫폼에서 </p>
