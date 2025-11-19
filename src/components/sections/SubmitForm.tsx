@@ -9,6 +9,10 @@ import FormLabel from '../FormLabel';
 import { FileUploadRequest } from '@/types/api';
 import { getPresignedUrls, submitRegistration } from '@/lib/api';
 import { SyncLoader } from 'react-spinners';
+import PersonalInfoModal from '../agreementModal/PersonalInfoModal';
+import ContentModal from '../agreementModal/ContentModal';
+import MarketingModal from '../agreementModal/MarketingModal';
+import ThirdPartyModal from '../agreementModal/ThirdPartyModal';
 
 interface FilePreview {
     url: string;
@@ -45,14 +49,60 @@ export default function SubmitForm() {
     const [serviceLink, setServiceLink] = useState('');
     const [suggestion, setSuggestion] = useState('');
     const charCount = suggestion.length;
-    const [agreement, setAgreement] = useState(false);
+    const [allAgreed, setAllAgreed] = useState(false);
+    const [agreedToPersonalInfoCollection, setAgreedToPersonalInfoCollection] = useState(false);
+    const [agreedToContentCollection, setAgreedToContentCollection] = useState(false);
+    const [agreedToThirdPartyProvision, setAgreedToThirdPartyProvision] = useState(false);
+    const [agreedToMarketing, setAgreedToMarketing] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [roomImages, setRoomImages] = useState<File[]>([]);
     const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
     const [limitToastShown, setLimitToastShown] = useState(false);
-    const [viewModal, setViewModal] = useState(false);
+
+    const [viewPersonalInfoModal, setViewPersonalInfoModal] = useState(false);
+    const [viewContentModal, setViewContentModal] = useState(false);
+    const [viewThirdPartyModal, setViewThirdPartyModal] = useState(false);
+    const [viewMarketingModal, setViewMarketingModal] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+    const requiredAgreementsMet =
+        agreedToPersonalInfoCollection && agreedToContentCollection && agreedToThirdPartyProvision;
+    useEffect(() => {
+        setAgreedToPersonalInfoCollection(allAgreed);
+        setAgreedToContentCollection(allAgreed);
+        setAgreedToThirdPartyProvision(allAgreed);
+        setAgreedToMarketing(allAgreed);
+    }, [allAgreed]);
+
+    // [추가] 드래그 이벤트 핸들러에서 사용할 현재 열린 모달을 닫는 함수
+    const setViewModal = (isOpen: boolean) => {
+        // 열린 모달이 있다면 닫기
+        if (viewPersonalInfoModal) setViewPersonalInfoModal(isOpen);
+        if (viewContentModal) setViewContentModal(isOpen);
+        if (viewThirdPartyModal) setViewThirdPartyModal(isOpen);
+        if (viewMarketingModal) setViewMarketingModal(isOpen);
+    };
+    const handlePersonalInfoConfirm = () => {
+        setAgreedToPersonalInfoCollection(true);
+        setErrors((prev) => ({ ...prev, agreement: undefined }));
+        setViewPersonalInfoModal(false);
+    };
+    const handleContentConfirm = () => {
+        setAgreedToContentCollection(true);
+        setErrors((prev) => ({ ...prev, agreement: undefined }));
+        setViewContentModal(false);
+    };
+    const handleThirdPartyConfirm = () => {
+        setAgreedToThirdPartyProvision(true);
+        setErrors((prev) => ({ ...prev, agreement: undefined }));
+        setViewThirdPartyModal(false);
+    };
+    const handleMarketingConfirm = () => {
+        setAgreedToMarketing(true);
+        setErrors((prev) => ({ ...prev, agreement: undefined }));
+        setViewMarketingModal(false);
+    };
 
     const nameRef = useRef<HTMLInputElement>(null);
     const phoneRef = useRef<HTMLInputElement>(null);
@@ -276,8 +326,8 @@ export default function SubmitForm() {
             }
             hasError = true;
         }
-        if (!agreement) {
-            newErrors.agreement = '개인정보 수집에 동의해주세요.';
+        if (!requiredAgreementsMet) {
+            newErrors.agreement = '필수 동의 항목에 모두 동의해주세요.';
             if (!hasError) {
                 toast(newErrors.agreement);
                 agreementRef.current?.focus();
@@ -350,7 +400,10 @@ export default function SubmitForm() {
                 name,
                 phoneNumber: phone, // formatPhoneNumber로 이미 처리된 상태
                 thirdPartyUrl: serviceLink,
-                agreedToPrivacy: agreement,
+                agreedToPersonalInfoCollection,
+                agreedToContentCollection,
+                agreedToThirdPartyProvision,
+                agreedToMarketing,
                 featureSuggestions: suggestion,
                 introductoryImageFileKeys: uploadedFileKeys, // S3에 업로드된 파일들의 키
             };
@@ -406,7 +459,11 @@ export default function SubmitForm() {
                                     setPhone('');
                                     setServiceLink('');
                                     setSuggestion('');
-                                    setAgreement(false);
+                                    setAllAgreed(false);
+                                    setAgreedToPersonalInfoCollection(false);
+                                    setAgreedToContentCollection(false);
+                                    setAgreedToThirdPartyProvision(false);
+                                    setAgreedToMarketing(false);
                                     setRoomImages([]);
 
                                     filePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
@@ -420,184 +477,52 @@ export default function SubmitForm() {
                     </div>
                 </div>
             )}
-            {isMobileView && (
-                <>
-                    {' '}
-                    <div
-                        className={`fixed z-998 left-0 top-0 w-full h-full grid place-items-center
-                        transition-all duration-500
-                        ${
-                            viewModal
-                                ? 'opacity-100 visibility-visible bg-black/50'
-                                : 'opacity-0 visibility-hidden bg-transparent pointer-events-none'
-                        }`}
-                        // [수정]
-                        // 1. (보일 때) opacity-100, visibility-visible, bg-black/50
-                        // 2. (숨길 때) opacity-0, visibility-hidden, bg-transparent
-                        // 3. (숨길 때) pointer-events-none: 숨겨져 있을 때 클릭 이벤트를 막음
-                    ></div>
-                    {/* <div
-                        className={`fixed z-999 left-0 bottom-0 bg-white w-full rounded-[10px]
-                            transition-all duration-300
-                        ${viewModal ? 'translate-y-0' : 'translate-y-150'}`}
-                    > */}
-                    <div
-                        className={`fixed z-999 left-0 bottom-0 bg-white w-full rounded-t-[10px]
-                ${isDragging ? '' : 'transition-transform duration-300'}
-            `}
-                        // [수정]
-                        // 1. 'translate-y-0', 'translate-y-150' 제거
-                        // 2. 드래그 중(isDragging)일 때는 transition을 제거해야 부드럽게 따라옴
 
-                        style={{
-                            // 3. style에서 transform을 직접 제어
-                            transform: viewModal
-                                ? `translateY(${dragY}px)` // 드래그 중인 Y값 적용
-                                : 'translateY(100%)', // 닫혔을 때 (150% 대신 100%로 수정)
-                        }}
-                        onClick={(e) => e.stopPropagation()} // 배경 클릭 시 닫힘 방지
-                    >
-                        <div className='w-full h-9 py-2 grid place-items-center'>
-                            <button
-                                onPointerDown={handleDragStart}
-                                onPointerMove={handleDragMove}
-                                onPointerUp={handleDragEnd}
-                                onPointerCancel={handleDragEnd} // 드래그가 비정상적으로 취소될 때 (예: 알림)
-                                className='cursor-grab active:cursor-grabbing touch-none w-full h-full grid place-items-center'
-                            >
-                                <Image
-                                    src='/images/icons/drag-handle-icon.svg'
-                                    alt='close'
-                                    width={32}
-                                    height={4}
-                                    className='w-8 h-1'
-                                />
-                            </button>
-                        </div>
-                        <div className='px-5 pt-2 pb-5'>
-                            <h2 className='text-title-s-22-2 text-gray-800 mb-6'>개인정보 수집 및 이용 동의</h2>
-                            <p className='mb-8'>
-                                수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
-                                안내해 드리오니 자세히 읽으신 후 동의해 주시기 바랍니다.
-                            </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 및 이용 목적</h3>
-                            <ul className='text-base-l-16-1 text-gray-600 mb-6'>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>페이지 내
-                                    매물 등록
-                                </li>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>상담 접수
-                                    및 처리
-                                </li>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>처리 내역
-                                    보관 용도
-                                </li>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>중복 상담
-                                    확인
-                                </li>
-                            </ul>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
-                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                (필수) 성함, 전화번호, 기존 서비스 링크
-                            </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
-                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
-                            </p>
-                            <hr className='text-gray-300 mb-5' />
-                            <p className='text-base-m-14-1 text-gray-400'>
-                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
-                                이용하실 수 없습니다.
-                            </p>
-                        </div>
-                        <div className='px-5 mb-10'>
-                            <button
-                                className='bg-primary-600 text-white w-full h-14 rounded-[4px]'
-                                onClick={() => {
-                                    setAgreement(true);
-                                    setErrors((prev) => ({ ...prev, agreement: undefined }));
-                                    setViewModal(false);
-                                }}
-                            >
-                                확인
-                            </button>
-                        </div>
-                    </div>
-                </>
-            )}
-            {!isMobileView && viewModal && (
-                <div className='fixed bg-black/50 z-998 left-0 top-0 w-full h-full grid place-items-center'>
-                    <div className='bg-white w-105 rounded-[10px]'>
-                        <div className='w-full h-14 px-5 py-4 flex justify-end border-b border-gray-300'>
-                            <button onClick={() => setViewModal(false)} className='cursor-pointer'>
-                                <Image
-                                    src='/images/icons/delete-icon.svg'
-                                    alt='close'
-                                    width={24}
-                                    height={24}
-                                    className='w-6 h-6'
-                                />
-                            </button>
-                        </div>
-                        <div className='px-5 py-6'>
-                            <h2 className='text-center text-base-exl-18-2 text-gray-800 mb-6'>
-                                개인정보 수집 및 이용 동의
-                            </h2>
-                            <p className='mb-8'>
-                                수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
-                                안내 드리오니 자세히 읽으신 후 동의하여 주시기 바랍니다.
-                            </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 및 이용 목적</h3>
-                            <ul className='text-base-l-16-1 text-gray-600 mb-6'>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>페이지 내
-                                    매물 등록
-                                </li>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>상담 접수
-                                    및 처리
-                                </li>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>처리 내역
-                                    보관 용도
-                                </li>
-                                <li className='flex items-center'>
-                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>중복 상담
-                                    확인
-                                </li>
-                            </ul>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
-                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                (필수) 성함, 전화번호, 기존 서비스 링크
-                            </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
-                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
-                            </p>
-                            <hr className='text-gray-300 mb-6' />
-                            <p className='text-base-m-14-1 text-gray-400'>
-                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
-                                이용하실 수 없습니다.
-                            </p>
-                        </div>
-                        <div className='px-5 py-4'>
-                            <button
-                                className='border border-gray-300 w-full h-14 rounded-[4px]'
-                                onClick={() => {
-                                    setAgreement(true);
-                                    setErrors((prev) => ({ ...prev, agreement: undefined }));
-                                    setViewModal(false);
-                                }}
-                            >
-                                확인
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <PersonalInfoModal
+                isOpen={viewPersonalInfoModal}
+                onClose={() => setViewPersonalInfoModal(false)}
+                onConfirm={handlePersonalInfoConfirm}
+                isMobileView={isMobileView}
+                isDragging={isDragging}
+                dragY={dragY}
+                handleDragStart={handleDragStart}
+                handleDragMove={handleDragMove}
+                handleDragEnd={handleDragEnd}
+            />
+            <ContentModal
+                isOpen={viewContentModal}
+                onClose={() => setViewContentModal(false)}
+                onConfirm={handleContentConfirm}
+                isMobileView={isMobileView}
+                isDragging={isDragging}
+                dragY={dragY}
+                handleDragStart={handleDragStart}
+                handleDragMove={handleDragMove}
+                handleDragEnd={handleDragEnd}
+            />
+            <ThirdPartyModal
+                isOpen={viewThirdPartyModal}
+                onClose={() => setViewThirdPartyModal(false)}
+                onConfirm={handleThirdPartyConfirm}
+                isMobileView={isMobileView}
+                isDragging={isDragging}
+                dragY={dragY}
+                handleDragStart={handleDragStart}
+                handleDragMove={handleDragMove}
+                handleDragEnd={handleDragEnd}
+            />
+            <MarketingModal
+                isOpen={viewMarketingModal}
+                onClose={() => setViewMarketingModal(false)}
+                onConfirm={handleMarketingConfirm}
+                isMobileView={isMobileView}
+                isDragging={isDragging}
+                dragY={dragY}
+                handleDragStart={handleDragStart}
+                handleDragMove={handleDragMove}
+                handleDragEnd={handleDragEnd}
+            />
+
             <form className='px-4 desktop:px-43.5' onSubmit={handleSubmit} noValidate>
                 {/* <Toaster position='top-center' /> */}
                 <h1 className='text-title-s-22-2 text-gray-800 mb-10'>등록정보</h1>
@@ -850,82 +775,348 @@ export default function SubmitForm() {
                 </div>
 
                 <div className='mb-20'>
-                    <div className='mb-5 desktop:mb-10 flex items-center'>
-                        <h2 className='text-title-s-22-2 text-gray-800'>개인정보 수집 동의</h2>
-                        <button type='button' className='ml-1 cursor-pointer' onClick={() => setViewModal(true)}>
-                            <Image
-                                src='/images/icons/right-arrow-icon-dark.svg'
-                                alt=''
-                                width={24}
-                                height={24}
-                                className='w-6 h-6'
-                            />
-                        </button>
-                    </div>
-                    <p className='mb-1 text-base-exl-18-1 text-gray-600'>
-                        뮤룸이 상단에 나와있는 사장님의 개인데이터를 처리하는데 동의하시겠습니까?
-                    </p>
-                    <p className='mb-5 text-base-l-16-1 text-gray-400'>
-                        *제공해주신 개인데이터는 매물 등록을 위한 목적 외에는 사용되지 않습니다.
-                    </p>
+                    <div className='mb-5 desktop:mb-10'>
+                        <h2 className='text-title-s-22-2 text-gray-800 mb-10'>개인정보 및 정보 수집에 동의해주세요</h2>
 
-                    <div className='mb-10'>
-                        <label htmlFor='agreementInSubmitForm' className='group w-30 flex items-center cursor-pointer'>
-                            <input
-                                type='checkbox'
-                                checked={agreement}
-                                id='agreementInSubmitForm'
-                                name='agreement'
-                                className='peer hidden'
-                                required
-                                onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    setAgreement(isChecked);
+                        {/* [수정] 전체 동의 체크박스 및 레이블 */}
+                        <div className='mb-6'>
+                            <label htmlFor='allAgreement' className='group flex items-center cursor-pointer'>
+                                <input
+                                    type='checkbox'
+                                    checked={allAgreed}
+                                    id='allAgreement'
+                                    name='allAgreement'
+                                    className='peer hidden'
+                                    onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        setAllAgreed(isChecked); // allAgreed 상태만 업데이트
 
-                                    if (!isChecked) {
-                                        setErrors((prev) => ({ ...prev, agreement: '개인정보 수집에 동의해주세요.' }));
-                                    } else {
-                                        setErrors((prev) => ({ ...prev, agreement: undefined }));
-                                    }
-                                }}
-                            />
-                            <div
-                                ref={agreementRef}
-                                tabIndex={-1}
-                                className='relative grid h-6 w-6 place-items-center bg-white'
-                            >
-                                {!agreement && (
-                                    <>
+                                        // '전체 동의'를 체크하면 모든 개별 동의도 체크
+                                        if (isChecked) {
+                                            setAgreedToPersonalInfoCollection(true);
+                                            setAgreedToContentCollection(true);
+                                            setAgreedToThirdPartyProvision(true);
+                                            setAgreedToMarketing(true);
+                                        } else {
+                                            // '전체 동의'를 해제하면 모든 개별 동의도 해제 (요청하신 대로 유지)
+                                            setAgreedToPersonalInfoCollection(false);
+                                            setAgreedToContentCollection(false);
+                                            setAgreedToThirdPartyProvision(false);
+                                            setAgreedToMarketing(false);
+                                        }
+                                    }}
+                                />
+                                <div
+                                    ref={agreementRef}
+                                    tabIndex={-1}
+                                    className='relative grid h-6 w-6 place-items-center bg-white'
+                                >
+                                    {!allAgreed && (
+                                        <>
+                                            <Image
+                                                src='/images/icons/unchecked-icon.svg'
+                                                alt='check'
+                                                width={24}
+                                                height={24}
+                                                className='group-hover:hidden w-6 h-6'
+                                            />
+                                            <Image
+                                                src='/images/icons/unchecked-icon-hovered.svg'
+                                                alt='check'
+                                                width={24}
+                                                height={24}
+                                                className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
+                                            />
+                                        </>
+                                    )}
+                                    {allAgreed && (
                                         <Image
-                                            src='/images/icons/unchecked-icon.svg'
+                                            src='/images/icons/checked-icon.svg'
                                             alt='check'
                                             width={24}
                                             height={24}
-                                            className='group-hover:hidden w-6 h-6'
+                                            className=' w-6 h-6'
                                         />
+                                    )}
+                                </div>
+
+                                <span className='ml-2 text-base-exl-18-1 text-gray-800 font-bold'>모두 동의합니다</span>
+                            </label>
+                        </div>
+                        <hr className='text-gray-300 mb-6' />
+
+                        {/* [추가] 개별 동의 항목 리스트 */}
+                        <ul className='space-y-4'>
+                            {/* 1. 개인정보 수집 및 이용 동의 (필수) */}
+                            <li>
+                                <div className='flex items-center justify-between'>
+                                    <label
+                                        htmlFor='agreedToPersonalInfoCollection'
+                                        className='group flex items-center cursor-pointer'
+                                    >
+                                        <input
+                                            type='checkbox'
+                                            checked={agreedToPersonalInfoCollection}
+                                            id='agreedToPersonalInfoCollection'
+                                            name='agreedToPersonalInfoCollection'
+                                            className='peer hidden'
+                                            required
+                                            onChange={(e) => setAgreedToPersonalInfoCollection(e.target.checked)}
+                                        />
+                                        <div className='relative grid h-6 w-6 place-items-center bg-white'>
+                                            {/* (체크박스 아이콘 렌더링 로직 - 생략) */}
+                                            {!agreedToPersonalInfoCollection && (
+                                                <>
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='group-hover:hidden w-6 h-6'
+                                                    />
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon-hovered.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
+                                                    />
+                                                </>
+                                            )}
+                                            {agreedToPersonalInfoCollection && (
+                                                <Image
+                                                    src='/images/icons/checked-icon.svg'
+                                                    alt='check'
+                                                    width={24}
+                                                    height={24}
+                                                    className=' w-6 h-6'
+                                                />
+                                            )}
+                                        </div>
+                                        <span className='ml-2 text-base-l-16-1 text-gray-600'>
+                                            <span className='text-primary-400'>[필수]</span> 개인정보 수집 및 이용 동의
+                                        </span>
+                                    </label>
+                                    <button
+                                        type='button'
+                                        onClick={() => setViewPersonalInfoModal(true)}
+                                        className='cursor-pointer p-1'
+                                    >
                                         <Image
-                                            src='/images/icons/unchecked-icon-hovered.svg'
-                                            alt='check'
+                                            src='/images/icons/right-arrow-icon-dark.svg'
+                                            alt=''
                                             width={24}
                                             height={24}
-                                            className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
+                                            className='w-6 h-6'
                                         />
-                                    </>
-                                )}
-                                {agreement && (
-                                    <Image
-                                        src='/images/icons/checked-icon.svg'
-                                        alt='check'
-                                        width={24}
-                                        height={24}
-                                        className=' w-6 h-6'
-                                    />
-                                )}
-                            </div>
+                                    </button>
+                                </div>
+                            </li>
 
-                            <span className='ml-2 text-base-l-16-1 text-gray-600'>동의합니다</span>
-                        </label>
-                        <span className='mt-2 text-base-s-12-1 text-red-500'>{errors.agreement}</span>
+                            {/* 2. 매물 콘텐츠(저작물) 수집 및 이용 동의 (필수) */}
+                            <li>
+                                <div className='flex items-center justify-between'>
+                                    <label
+                                        htmlFor='agreedToContentCollection'
+                                        className='group flex items-center cursor-pointer'
+                                    >
+                                        <input
+                                            type='checkbox'
+                                            checked={agreedToContentCollection}
+                                            id='agreedToContentCollection'
+                                            name='agreedToContentCollection'
+                                            className='peer hidden'
+                                            required
+                                            onChange={(e) => setAgreedToContentCollection(e.target.checked)}
+                                        />
+                                        <div className='relative grid h-6 w-6 place-items-center bg-white'>
+                                            {!agreedToContentCollection && (
+                                                <>
+                                                    {' '}
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='group-hover:hidden w-6 h-6'
+                                                    />
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon-hovered.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
+                                                    />
+                                                </>
+                                            )}
+                                            {agreedToContentCollection && (
+                                                <Image
+                                                    src='/images/icons/checked-icon.svg'
+                                                    alt='check'
+                                                    width={24}
+                                                    height={24}
+                                                    className=' w-6 h-6'
+                                                />
+                                            )}
+                                        </div>
+                                        <span className='ml-2 text-base-l-16-1 text-gray-600'>
+                                            <span className='text-primary-400'>[필수]</span> 매물 콘텐츠(저작물) 수집 및
+                                            이용 동의
+                                        </span>
+                                    </label>
+                                    <button
+                                        type='button'
+                                        onClick={() => setViewContentModal(true)}
+                                        className='cursor-pointer p-1'
+                                    >
+                                        <Image
+                                            src='/images/icons/right-arrow-icon-dark.svg'
+                                            alt=''
+                                            width={24}
+                                            height={24}
+                                            className='w-6 h-6'
+                                        />
+                                    </button>
+                                </div>
+                            </li>
+
+                            {/* 3. 개인정보 제3자 제공 동의 (필수) */}
+                            <li>
+                                <div className='flex items-center justify-between'>
+                                    <label
+                                        htmlFor='agreedToThirdPartyProvision'
+                                        className='group flex items-center cursor-pointer'
+                                    >
+                                        <input
+                                            type='checkbox'
+                                            checked={agreedToThirdPartyProvision}
+                                            id='agreedToThirdPartyProvision'
+                                            name='agreedToThirdPartyProvision'
+                                            className='peer hidden'
+                                            required
+                                            onChange={(e) => setAgreedToThirdPartyProvision(e.target.checked)}
+                                        />
+                                        <div className='relative grid h-6 w-6 place-items-center bg-white'>
+                                            {!agreedToThirdPartyProvision && (
+                                                <>
+                                                    {' '}
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='group-hover:hidden w-6 h-6'
+                                                    />
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon-hovered.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
+                                                    />
+                                                </>
+                                            )}
+                                            {agreedToThirdPartyProvision && (
+                                                <Image
+                                                    src='/images/icons/checked-icon.svg'
+                                                    alt='check'
+                                                    width={24}
+                                                    height={24}
+                                                    className=' w-6 h-6'
+                                                />
+                                            )}
+                                        </div>
+                                        <span className='ml-2 text-base-l-16-1 text-gray-600'>
+                                            <span className='text-primary-400'>[필수]</span> 개인정보 제3자 제공 동의
+                                        </span>
+                                    </label>
+                                    <button
+                                        type='button'
+                                        onClick={() => setViewThirdPartyModal(true)}
+                                        className='cursor-pointer p-1'
+                                    >
+                                        <Image
+                                            src='/images/icons/right-arrow-icon-dark.svg'
+                                            alt=''
+                                            width={24}
+                                            height={24}
+                                            className='w-6 h-6'
+                                        />
+                                    </button>
+                                </div>
+                            </li>
+
+                            {/* 4. 마케팅 정보 수신 동의 (선택) */}
+                            <li>
+                                <div className='flex items-center justify-between'>
+                                    <label
+                                        htmlFor='agreedToMarketing'
+                                        className='group flex items-center cursor-pointer'
+                                    >
+                                        <input
+                                            type='checkbox'
+                                            checked={agreedToMarketing}
+                                            id='agreedToMarketing'
+                                            name='agreedToMarketing'
+                                            className='peer hidden'
+                                            onChange={(e) => setAgreedToMarketing(e.target.checked)}
+                                        />
+                                        <div className='relative grid h-6 w-6 place-items-center bg-white'>
+                                            {!agreedToMarketing && (
+                                                <>
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='group-hover:hidden w-6 h-6'
+                                                    />
+                                                    <Image
+                                                        src='/images/icons/unchecked-icon-hovered.svg'
+                                                        alt='check'
+                                                        width={24}
+                                                        height={24}
+                                                        className='hidden group-hover:block group-hover:shadow-level-0 w-6 h-6'
+                                                    />
+                                                </>
+                                            )}
+                                            {agreedToMarketing && (
+                                                <Image
+                                                    src='/images/icons/checked-icon.svg'
+                                                    alt='check'
+                                                    width={24}
+                                                    height={24}
+                                                    className=' w-6 h-6'
+                                                />
+                                            )}
+                                        </div>
+                                        <span className='ml-2 text-base-l-16-1 text-gray-600'>
+                                            <span className='text-gray-400'>[선택]</span> 마케팅 정보 수신 동의
+                                        </span>
+                                    </label>
+                                    <button
+                                        type='button'
+                                        onClick={() => setViewMarketingModal(true)}
+                                        className='cursor-pointer p-1'
+                                    >
+                                        <Image
+                                            src='/images/icons/right-arrow-icon-dark.svg'
+                                            alt=''
+                                            width={24}
+                                            height={24}
+                                            className='w-6 h-6'
+                                        />
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+
+                        {/* [수정] 필수 동의 오류 메시지 */}
+                        {!requiredAgreementsMet && (
+                            <span className='mt-2 text-base-s-12-1 text-red-500'>
+                                {errors.agreement || '필수 동의 항목에 모두 동의해주세요.'}
+                            </span>
+                        )}
                     </div>
 
                     <div className='grid place-items-center'>

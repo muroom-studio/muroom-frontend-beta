@@ -359,18 +359,15 @@ export default function InquirySection() {
                                     보관 용도
                                 </li>
                             </ul>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 항목</h3>
+                            <p className='text-base-l-16-1 text-gray-600 mb-6'>(필수) 성함, 연락처(전화번호)</p>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보유 및 이용 기간</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                (필수) 성함, 전화번호, 기존 서비스 링크
-                            </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
-                            <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
+                                문의 접수 및 처리 완료 후 3년간 보관 (관련 법령에 따름)
                             </p>
                             <hr className='text-gray-300 mb-5' />
                             <p className='text-base-m-14-1 text-gray-400'>
-                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
-                                이용하실 수 없습니다.
+                                동의를 거부할 권리가 있으며, 거부 시 서비스 이용이 불가능합니다.
                             </p>
                         </div>
                         <div className='px-5 mb-10'>
@@ -410,18 +407,28 @@ export default function InquirySection() {
                                 수집하는 개인정보의 항목, 개인정보의 수집 및 이용 목적, 개인정보의 보유 및 이용 기간을
                                 안내 드리오니 자세히 읽으신 후 동의하여 주시기 바랍니다.
                             </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집항목</h3>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 및 이용 목적</h3>
+                            <ul className='text-base-l-16-1 text-gray-600 mb-6'>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>상담 접수
+                                    및 처리
+                                </li>
+                                <li className='flex items-center'>
+                                    <span className='block w-1 h-1 ml-2 mr-3 rounded-full bg-gray-600'></span>처리 내역
+                                    보관 용도
+                                </li>
+                            </ul>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>수집 항목</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                (필수) 성함, 전화번호, 기존 서비스 링크
+                                (필수) 성함, 연락처(전화번호), 문의 내용
                             </p>
-                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보관 기간</h3>
+                            <h3 className='text-base-l-16-2 text-gray-600 mb-1'>보유 및 이용 기간</h3>
                             <p className='text-base-l-16-1 text-gray-600 mb-6'>
-                                수집 이용 동의일로부터 12개월 (단, 요청시 삭제)
+                                문의 접수 및 처리 완료 후 3년간 보관 (관련 법령에 따름)
                             </p>
                             <hr className='text-gray-300 mb-6' />
                             <p className='text-base-m-14-1 text-gray-400'>
-                                귀하는 위 개인 정보 수집 및 이용을 거부할 수 있으나, 동의를 거부하실 경우 서비스를
-                                이용하실 수 없습니다.
+                                동의를 거부할 권리가 있으며, 거부 시 서비스 이용이 불가능합니다.
                             </p>
                         </div>
                         <div className='px-5 py-4'>

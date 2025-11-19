@@ -48,7 +48,10 @@ export interface SubmitRegistrationRequest {
     name: string;
     phoneNumber: string;
     thirdPartyUrl: string;
-    agreedToPrivacy: boolean;
+    agreedToPersonalInfoCollection: boolean;
+    agreedToContentCollection: boolean;
+    agreedToThirdPartyProvision: boolean;
+    agreedToMarketing: boolean;
     featureSuggestions: string;
     introductoryImageFileKeys: string[]; // Presigned URL 응답에서 받은 fileKey 목록
 }
