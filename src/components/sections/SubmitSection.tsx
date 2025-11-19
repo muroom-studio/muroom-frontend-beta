@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import SubmitForm from './SubmitForm';
 
 export default function SubmitSection() {

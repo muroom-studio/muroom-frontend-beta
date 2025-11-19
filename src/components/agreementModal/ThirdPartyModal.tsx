@@ -1,7 +1,6 @@
 // components/modals/PersonalInfoModal.tsx
 
 import Image from 'next/image';
-import { useRef } from 'react';
 
 // 모바일 드래그 관련 props를 포함합니다.
 interface ThirdPartyModalProps {

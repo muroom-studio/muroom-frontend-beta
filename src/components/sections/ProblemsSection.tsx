@@ -1,25 +1,4 @@
 export default function ProblemsSection() {
-    const problems = [
-        {
-            id: 1,
-            description: '원하는 조건으로 필터링 할 수 없다',
-            selected: '22.6%',
-            width: 'full',
-        },
-        {
-            id: 2,
-            description: '정보가 표준화되어 있지 않다',
-            selected: '20.4%',
-            width: '577px',
-        },
-        {
-            id: 3,
-            description: '가격이 애매하거나 투명하지 않다',
-            selected: '20.3%',
-            width: '559px',
-        },
-    ];
-
     return (
         <section id='problems-section' className='col-span-full'>
             <div className='leading-[140%] text-2xl desktop:text-special-m-40-size font-bold mb-10 desktop:mb-14'>
