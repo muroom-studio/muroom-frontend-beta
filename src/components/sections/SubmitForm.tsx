@@ -59,6 +59,7 @@ export default function SubmitForm() {
     const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
     const [limitToastShown, setLimitToastShown] = useState(false);
+    const [isAgreementTouched, setIsAgreementTouched] = useState(false);
 
     const [viewPersonalInfoModal, setViewPersonalInfoModal] = useState(false);
     const [viewContentModal, setViewContentModal] = useState(false);
@@ -340,6 +341,7 @@ export default function SubmitForm() {
                 agreementRef.current?.focus();
             }
             hasError = true;
+            setIsAgreementTouched(true);
         }
 
         setErrors(newErrors);
@@ -798,6 +800,8 @@ export default function SubmitForm() {
                                         const isChecked = e.target.checked;
                                         setAllAgreed(isChecked); // allAgreed 상태만 업데이트
 
+                                        setIsAgreementTouched(true);
+
                                         // '전체 동의'를 체크하면 모든 개별 동의도 체크
                                         if (isChecked) {
                                             setAgreedToPersonalInfoCollection(true);
@@ -868,7 +872,10 @@ export default function SubmitForm() {
                                             name='agreedToPersonalInfoCollection'
                                             className='peer hidden'
                                             required
-                                            onChange={(e) => setAgreedToPersonalInfoCollection(e.target.checked)}
+                                            onChange={(e) => {
+                                                setAgreedToPersonalInfoCollection(e.target.checked);
+                                                setIsAgreementTouched(true);
+                                            }}
                                         />
                                         <div className='relative grid h-6 w-6 place-items-center bg-white'>
                                             {/* (체크박스 아이콘 렌더링 로직 - 생략) */}
@@ -934,7 +941,10 @@ export default function SubmitForm() {
                                             name='agreedToContentCollection'
                                             className='peer hidden'
                                             required
-                                            onChange={(e) => setAgreedToContentCollection(e.target.checked)}
+                                            onChange={(e) => {
+                                                setAgreedToContentCollection(e.target.checked);
+                                                setIsAgreementTouched(true);
+                                            }}
                                         />
                                         <div className='relative grid h-6 w-6 place-items-center bg-white'>
                                             {!agreedToContentCollection && (
@@ -1001,7 +1011,10 @@ export default function SubmitForm() {
                                             name='agreedToThirdPartyProvision'
                                             className='peer hidden'
                                             required
-                                            onChange={(e) => setAgreedToThirdPartyProvision(e.target.checked)}
+                                            onChange={(e) => {
+                                                setAgreedToThirdPartyProvision(e.target.checked);
+                                                setIsAgreementTouched(true);
+                                            }}
                                         />
                                         <div className='relative grid h-6 w-6 place-items-center bg-white'>
                                             {!agreedToThirdPartyProvision && (
@@ -1119,7 +1132,7 @@ export default function SubmitForm() {
                         </ul>
 
                         {/* [수정] 필수 동의 오류 메시지 */}
-                        {!requiredAgreementsMet && (
+                        {!requiredAgreementsMet && (isAgreementTouched || errors.agreement) && (
                             <span className='mt-2 text-base-s-12-1 text-red-500'>
                                 {errors.agreement || '필수 동의 항목에 모두 동의해주세요.'}
                             </span>
