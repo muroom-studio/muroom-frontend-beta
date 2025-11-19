@@ -68,13 +68,20 @@ export default function SubmitForm() {
 
     const requiredAgreementsMet =
         agreedToPersonalInfoCollection && agreedToContentCollection && agreedToThirdPartyProvision;
+    // useEffect(() => {
+    //     setAgreedToPersonalInfoCollection(allAgreed);
+    //     setAgreedToContentCollection(allAgreed);
+    //     setAgreedToThirdPartyProvision(allAgreed);
+    //     setAgreedToMarketing(allAgreed);
+    // }, [allAgreed]);
     useEffect(() => {
-        setAgreedToPersonalInfoCollection(allAgreed);
-        setAgreedToContentCollection(allAgreed);
-        setAgreedToThirdPartyProvision(allAgreed);
-        setAgreedToMarketing(allAgreed);
-    }, [allAgreed]);
-
+        setAllAgreed(
+            agreedToPersonalInfoCollection &&
+                agreedToContentCollection &&
+                agreedToThirdPartyProvision &&
+                agreedToMarketing
+        );
+    }, [agreedToPersonalInfoCollection, agreedToContentCollection, agreedToThirdPartyProvision, agreedToMarketing]);
     // [추가] 드래그 이벤트 핸들러에서 사용할 현재 열린 모달을 닫는 함수
     const setViewModal = (isOpen: boolean) => {
         // 열린 모달이 있다면 닫기
