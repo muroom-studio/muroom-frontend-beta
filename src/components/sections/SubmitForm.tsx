@@ -419,6 +419,7 @@ export default function SubmitForm() {
 
             await submitRegistration(submissionData);
 
+            setIsAgreementTouched(false);
             setLoadingSubmit(false);
             setSubmitted(true);
         } catch (_error) {
