@@ -12,24 +12,51 @@ import {
     GetRegistrationCountResponse,
 } from '../types/api';
 
+interface ApiFetcherOptions extends RequestInit {
+    timeout?: number; // milliseconds
+}
+
 /**
  * API 요청을 위한 범용 fetcher 함수
  */
-async function apiFetcher<T>(url: string, options?: RequestInit): Promise<T> {
-    const response = await fetch(`${process.env.API_BASE_URL}${url}`, {
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers,
-        },
-        ...options,
-    });
+async function apiFetcher<T>(url: string, options?: ApiFetcherOptions): Promise<T> {
+    const { timeout, ...fetchOptions } = options || {}; // options에서 timeout을 분리
 
-    if (!response.ok) {
-        const errorData: ApiErrorResponse = await response.json();
-        throw new Error(errorData.message || 'API 요청 실패');
+    const controller = new AbortController();
+
+    const effectiveTimeout = timeout ?? 15000; // 기본 타임아웃 15초 설정
+
+    let timeoutId: NodeJS.Timeout | undefined; // NodeJS 환경을 위한 타입 힌트
+    if (effectiveTimeout > 0) {
+        timeoutId = setTimeout(() => controller.abort(), effectiveTimeout);
     }
 
-    return response.json();
+    try {
+        const response = await fetch(`${process.env.API_BASE_URL}${url}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...fetchOptions?.headers,
+            },
+            ...fetchOptions,
+            signal: controller.signal,
+        });
+
+        if (!response.ok) {
+            const errorData: ApiErrorResponse = await response.json();
+            throw new Error(errorData.message || 'API 요청 실패');
+        }
+
+        return response.json();
+    } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw new Error('요청이 시간 초과로 인해 중단되었습니다. 잠시 후 다시 시도해주세요.');
+        }
+        throw error;
+    } finally {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+    }
 }
 
 export async function getRemainingCount() {
@@ -57,26 +84,6 @@ export async function getPresignedUrls(
     });
     return response.data.presignedUrls;
 }
-
-/**
- * Presigned URL을 사용하여 S3에 파일을 업로드하는 함수
- * @param presignedUrl S3에 파일을 PUT할 presigned URL
- * @param file 업로드할 File 객체
- */
-// export async function uploadFileToS3(presignedUrl: string, file: File): Promise<void> {
-//     // S3에 직접 업로드하는 것이므로 API_BASE_URL을 사용하지 않고 전체 URL 사용
-//     const response = await fetch(presignedUrl, {
-//         method: 'PUT',
-//         headers: {
-//             'Content-Type': file.type, // 파일의 실제 MIME 타입
-//         },
-//         body: file,
-//     });
-
-//     if (!response.ok) {
-//         throw new Error(`S3 파일 업로드 실패: ${response.statusText}`);
-//     }
-// }
 
 /**
  * 최종 폼 데이터를 제출하는 함수
