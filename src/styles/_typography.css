@@ -73,6 +73,11 @@
 }
 
 @layer utilities {
+    .text-super {
+        font-size: 48px;
+        line-height: 140%;
+        font-weight: 700;
+    }
     .text-special-m-40 {
         font-size: var(--text-special-m-40-size);
         line-height: var(--text-special-m-40-line-height);

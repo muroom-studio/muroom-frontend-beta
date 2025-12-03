@@ -16,9 +16,16 @@ import InquirySection from '@/components/sections/InquirySection';
 import TopAnchorButton from '@/components/TopAnchorButton';
 import Footer from '@/components/Footer';
 import EventSection from '@/components/sections/EventSection';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 // TODO: 440px까지는 횡단 스크롤, 그 이하부터는 모바일뷰
 export default function Intro() {
+    const router = useRouter();
+    useEffect(() => {
+        router.push('/');
+    }, [router]);
+
     return (
         <div className='relative w-full min-w-90 desktop:min-w-306 h-full bg-white flex flex-col items-center'>
             <BackgroundWithTitle />
