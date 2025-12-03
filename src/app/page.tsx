@@ -11,7 +11,7 @@ export default function Home() {
                     <Image src='/images/logo/logo.svg' alt='muroom' width={133} height={32} />
                 </div>
                 <div className='w-full flex flex-col items-center'>
-                    <Image src='/images/icons/cone-icon.svg' alt='Logo' width={133} height={32} className='mb-10' />
+                    <Image src='/images/icons/cone-icon.svg' alt='Logo' width={192} height={192} className='mb-10' />
                     <h1 className='text-super mb-5'>현재 서비스 준비 중입니다.</h1>
 
                     <div className='text-gray-800 text-2xl text-center leading-[32px] tracking-[-0.02em]'>
@@ -26,7 +26,7 @@ export default function Home() {
                     <Image src='/images/logo/logo.svg' alt='muroom' width={133} height={32} />
                 </div>
                 <div className='w-full flex flex-col items-center'>
-                    <Image src='/images/icons/cone-icon.svg' alt='Logo' width={133} height={32} className='mb-10' />
+                    <Image src='/images/icons/cone-icon.svg' alt='Logo' width={128} height={128} className='mb-8' />
                     <h1 className='text-[28px] font-bold leading-[39px] tracking-tight mb-4'>
                         현재 서비스 준비중입니다.
                     </h1>
