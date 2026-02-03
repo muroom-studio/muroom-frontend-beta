@@ -17,7 +17,7 @@ export default function Home() {
           <div className='text-gray-800 text-2xl text-center leading-[32px] tracking-[-0.02em]'>
             <p>이용에 불편을 드려 죄송합니다.</p>
             <p>더 나은 서비스 제공을 위해 점검 중에 있습니다.</p>
-            <p>2월 3일(화) 오전 03:00 시까지 예정</p>
+            <p>2월 3일(화) 오후 10:00 시까지 예정</p>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@ export default function Home() {
           <div className='text-gray-800 text-[16px] text-center leading-[22px] tracking-tight'>
             <p>이용에 불편을 드려 죄송합니다.</p>
             <p>더 나은 서비스 제공을 위해 점검 중에 있습니다.</p>
-            <p>2월 3일(화) 오전 03:00 시까지 예정</p>
+            <p>2월 3일(화) 오후 10:00 시까지 예정</p>
           </div>
         </div>
       </div>
